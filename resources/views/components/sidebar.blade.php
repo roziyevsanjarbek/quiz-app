@@ -18,5 +18,9 @@
             <span class="nav-icon">✍️</span>
             <span class="nav-label">Create Quiz</span>
         </a>
+        <a href="{{ route('upload-quiz') }}" class="nav-item {{ request()->routeIs('upload-quiz') ? 'active' : '' }}">
+            <span class="nav-icon">⬆️</span>
+            <span class="nav-label">Fayl Yuklash</span>
+        </a>
     </nav>
 </aside>

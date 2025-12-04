@@ -35,4 +35,8 @@ class HomeController extends Controller
     {
         return view('take-quiz');
     }
+    public function uploadQuiz()
+    {
+        return view('upload-quiz');
+    }
 }
