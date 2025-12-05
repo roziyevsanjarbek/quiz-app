@@ -48,19 +48,6 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Create Quiz Section -->
-            <section class="create-quiz-section">
-                <div class="quiz-creation-card">
-                    <div class="quiz-creation-content">
-                        <h3>Testni Yaratish</h3>
-                        <p>Tanlangan fayllardan avtomatik ravishda test savollarini yarating</p>
-                    </div>
-                    <button class="btn btn-primary btn-large" id="createQuizBtn" onclick="createQuizFromFile()" disabled>
-                        Test Yaratish
-                    </button>
-                </div>
-            </section>
         </div>
     </main>
 </div>
@@ -143,69 +130,79 @@
             `).join('');
     }
 
-    // Select/deselect file
-    function toggleFileSelection(fileId) {
-        const index = selectedFiles.indexOf(fileId);
-        if (index > -1) {
-            selectedFiles.splice(index, 1);
-        } else {
-            selectedFiles.push(fileId);
-        }
-        updateCreateButton();
+
+        document.getElementById('fileInput').addEventListener('change', function (e) {
+        const files = e.target.files;
+        const token = localStorage.getItem('token');
+        if (files.length === 0) {
+        alert("Fayl tanlanmadi!");
+        return;
     }
 
-    // Delete file
-    function deleteFile(fileId) {
-        uploadedFiles = uploadedFiles.filter(f => f.id !== fileId);
-        selectedFiles = selectedFiles.filter(id => id !== fileId);
-        renderFiles();
-        updateCreateButton();
+        let formData = new FormData();
+
+        // 1 ta fayl topshiryapsiz deb o'ylaymiz
+        formData.append('file', files[0]);
+
+        axios.post('/api/quiz/upload', formData, {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
     }
+    })
+        .then(response => {
+        console.log(response.data);
+        alert("Fayl muvaffaqiyatli yuklandi!");
 
-    // Update create button state
-    function updateCreateButton() {
-        createQuizBtn.disabled = selectedFiles.length === 0;
-    }
-
-    // Create quiz
-    function createQuizFromFile() {
-        if (selectedFiles.length === 0) {
-            alert('Iltimos, test yaratish uchun fayl tanlang');
-            return;
-        }
-        const selectedFileNames = uploadedFiles
-            .filter(f => selectedFiles.includes(f.id))
-            .map(f => f.name)
-            .join(', ');
-        alert(`✅ Test "${selectedFileNames}" fayllardan yaratilmoqda...`);
-    }
-
-    // Format file size
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-    }
-
-    // Get file type emoji
-    function getFileType(filename) {
-        const ext = filename.split('.').pop().toLowerCase();
-        const types = {
-            pdf: '📄', doc: '📝', docx: '📝', txt: '📄',
-            jpg: '🖼️', png: '🖼️', jpeg: '🖼️'
-        };
-        return types[ext] || '📎';
-    }
-
-    // Initialize
-    updateCreateButton();
-
-    // Logout
-    document.querySelector('.logout-btn').addEventListener('click', function() {
-        window.location.href = 'index.html';
+        window.location.href = '/my-quizzes'
+    })
+        .catch(error => {
+        console.error(error.response?.data || error);
+        alert("Fayl yuklashda xatolik!");
     });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        const filesList = document.getElementById("filesList");
+        const fileCount = document.getElementById("fileCount");
+        // LocalStorage dan token olish
+        const token = localStorage.getItem('token');
+
+        axios.get('/api/quiz/upload', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            const files = response.data.files;
+
+            // Fayl sonini yangilash
+            fileCount.textContent = `${files.length} ta fayl`;
+
+            // Bo'sh stateni olib tashlash
+            filesList.innerHTML = '';
+
+            if (files.length === 0) {
+                filesList.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">📂</span>
+                <p>Hozircha fayl yo'q</p>
+            </div>
+                `;
+            } else {
+                files.forEach(file => {
+                    const fileItem = document.createElement("div");
+                    fileItem.classList.add("file-item");
+                    fileItem.innerHTML = `
+                <a href="${file.url}" target="_blank">${file.name}</a>
+                `;
+                    filesList.appendChild(fileItem);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Fayllarni olishda xatolik:', error);
+        });
+            });
+
 </script>
-</body>
-</html>
+<x-footer></x-footer>

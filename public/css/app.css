@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+/*@import 'tailwindcss';*/
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -378,35 +378,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.topbar-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-/* Added back button styling */
-.back-btn {
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    cursor: pointer;
-    font-size: 0.9rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: var(--radius);
-    transition: background-color 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.back-btn:hover {
-    background-color: var(--bg-hover);
-}
-
-.back-icon {
-    font-size: 1.2rem;
 }
 
 .topbar-left h2 {
@@ -924,12 +895,6 @@ body {
 }
 
 /* Upload Page Styles */
-.upload-content {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-}
-
 .upload-section {
     background: var(--light-bg);
     padding: 2rem;
@@ -1100,119 +1065,215 @@ body {
     font-size: 0.95rem;
 }
 
-/* Add profile page styles */
-
-/* Profile Content */
-.profile-content {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-    background: var(--secondary-color);
-}
-
-/* Profile Header */
-.profile-header {
-    margin-bottom: 2rem;
-}
-
-.profile-cover {
-    height: 200px;
-    background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
-    border-radius: var(--radius) var(--radius) 0 0;
-    position: relative;
-}
-
-.profile-card {
-    background: var(--light-bg);
-    border-radius: 0 0 var(--radius) var(--radius);
-    padding: 2rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 2rem;
-    border: 1px solid var(--border-color);
-    border-top: none;
-    margin-bottom: 2rem;
-    margin-top: -60px;
-    position: relative;
-    z-index: 1;
-}
-
-.profile-large-avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 5px solid var(--secondary-color);
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.profile-info {
-    flex: 1;
-}
-
-.profile-info h1 {
-    margin: 0;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-    font-size: 1.75rem;
-}
-
-.profile-role {
-    color: var(--primary-color);
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-}
-
-.profile-bio {
-    color: var(--text-secondary);
-    margin: 0 0 1.5rem 0;
-    line-height: 1.5;
-}
-
-.profile-stats {
-    display: flex;
-    gap: 2rem;
-}
-
-.profile-stats .stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-number {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-}
-
-.stat-label {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-top: 0.25rem;
-}
-
-/* Profile Tabs */
-.profile-tabs {
-    background: var(--light-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    overflow: hidden;
-}
-
-.tabs-header {
-    display: flex;
-    border-bottom: 1px solid var(--border-color);
-    background: var(--secondary-color);
-    padding: 0;
-}
-
-.tab-btn {
-    flex: 1;
-    padding: 1rem 1.5rem;
-    background: none;
+/* Buttons */
+.btn {
+    padding: 0.75rem 1.5rem;
     border: none;
-    cursor: pointer;
-    color: var(--text-secondary);
+    border-radius: var(--radius);
+    font-size: 1rem;
     font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--border-color);
+}
+
+.btn-large {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.logout-btn {
+    width: 100%;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    background-color: var(--primary-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 1rem 0.5rem;
+    }
+
+    .sidebar-header {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-header .logo-icon {
+        font-size: 1.5rem;
+    }
+
+    .nav-icon {
+        font-size: 1.5rem;
+    }
+
+    .main-content {
+        margin-left: 70px;
+    }
+
+    .navbar-container {
+        padding: 0 1rem;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .topbar {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .topbar-right {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+
+    .quiz-navigation {
+        flex-direction: column;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .hero-features {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quizzes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-section {
+        padding: 1.5rem;
+    }
+
+    .upload-area {
+        padding: 2rem 1rem;
+    }
+
+    .upload-area h2 {
+        font-size: 1.25rem;
+    }
+
+    .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .file-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .quiz-creation-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .quiz-creation-card .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .hero-content p {
+        font-size: 0.95rem;
+    }
+
+    .login-box {
+        padding: 2rem 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quiz-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .quiz-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .quiz-actions .btn {
+        width: 100%;
+    }
+
 }

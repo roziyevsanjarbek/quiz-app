@@ -13,4 +13,11 @@ class QuizUpload extends Model
         'file_path',
         'status',
     ];
+
+    // QuizUpload.php
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

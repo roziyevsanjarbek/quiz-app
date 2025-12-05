@@ -13,4 +13,11 @@ class Option extends Model
         'option_text',
         'is_correct',
     ];
+
+    // Option.php
+    public function question()
+    {
+        return $this->belongsTo(Question::class);
+    }
+
 }

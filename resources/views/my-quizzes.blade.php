@@ -1,104 +1,92 @@
 <x-header></x-header>
 <div class="app-layout">
-    <!-- Sidebar -->
     <x-sidebar></x-sidebar>
-
-    <!-- Main Content -->
     <main class="main-content">
         <x-navbar></x-navbar>
 
-
         <div class="quizzes-content">
             <div class="filters">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Created by me</button>
-                <button class="filter-btn">Published</button>
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="mine">Created by me</button>
+                <button class="filter-btn" data-filter="published">Published</button>
             </div>
 
-            <div class="quizzes-grid">
-                <div class="quiz-card">
-                    <div class="quiz-card-header">
-                        <h3>JavaScript Fundamentals</h3>
-                        <span class="quiz-badge">10 Qs</span>
-                    </div>
-                    <p class="quiz-desc">Master the basics of JavaScript programming</p>
-                    <div class="quiz-meta">
-                        <span>Created: 2 days ago</span>
-                        <span class="quiz-status">Published</span>
-                    </div>
-                    <div class="quiz-card-actions">
-                        <button class="btn btn-small btn-secondary">Edit</button>
-                        <button class="btn btn-small btn-secondary">Delete</button>
-                        <button class="btn btn-small btn-primary">Take</button>
-                    </div>
-                </div>
-
-                <div class="quiz-card">
-                    <div class="quiz-card-header">
-                        <h3>Web Development 101</h3>
-                        <span class="quiz-badge">15 Qs</span>
-                    </div>
-                    <p class="quiz-desc">Learn the fundamentals of web development</p>
-                    <div class="quiz-meta">
-                        <span>Created: 5 days ago</span>
-                        <span class="quiz-status">Published</span>
-                    </div>
-                    <div class="quiz-card-actions">
-                        <button class="btn btn-small btn-secondary">Edit</button>
-                        <button class="btn btn-small btn-secondary">Delete</button>
-                        <button class="btn btn-small btn-primary">Take</button>
-                    </div>
-                </div>
-
-                <div class="quiz-card">
-                    <div class="quiz-card-header">
-                        <h3>CSS Styling Guide</h3>
-                        <span class="quiz-badge">8 Qs</span>
-                    </div>
-                    <p class="quiz-desc">Deep dive into CSS styling techniques</p>
-                    <div class="quiz-meta">
-                        <span>Created: 1 week ago</span>
-                        <span class="quiz-status">Draft</span>
-                    </div>
-                    <div class="quiz-card-actions">
-                        <button class="btn btn-small btn-secondary">Edit</button>
-                        <button class="btn btn-small btn-secondary">Delete</button>
-                        <button class="btn btn-small btn-secondary">Publish</button>
-                    </div>
-                </div>
-
-                <div class="quiz-card">
-                    <div class="quiz-card-header">
-                        <h3>React Hooks Advanced</h3>
-                        <span class="quiz-badge">12 Qs</span>
-                    </div>
-                    <p class="quiz-desc">Advanced React concepts and patterns</p>
-                    <div class="quiz-meta">
-                        <span>Created: 10 days ago</span>
-                        <span class="quiz-status">Published</span>
-                    </div>
-                    <div class="quiz-card-actions">
-                        <button class="btn btn-small btn-secondary">Edit</button>
-                        <button class="btn btn-small btn-secondary">Delete</button>
-                        <button class="btn btn-small btn-primary">Take</button>
-                    </div>
-                </div>
+            <div class="quizzes-grid" id="quizzesGrid">
+                <!-- Quizlar JS orqali shu yerga qo‘shiladi -->
             </div>
         </div>
     </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    document.querySelector('.logout-btn').addEventListener('click', function() {
-        window.location.href = 'index.html';
-    });
+    const quizzesGrid = document.getElementById('quizzesGrid');
+    const token = localStorage.getItem('token'); // Sanctum / Passport token
 
+    async function fetchQuizzes() {
+        try {
+            const response = await axios.get('/api/quizzes', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const quizzes = response.data.quizzes;
+            quizzesGrid.innerHTML = ''; // avvalgi quizlarni tozalash
+
+            quizzes.forEach(quiz => {
+                const quizCard = document.createElement('div');
+                quizCard.classList.add('quiz-card');
+                quizCard.innerHTML = `
+                    <div class="quiz-card-header">
+                        <h3>${quiz.title}</h3>
+                    </div>
+                    <p class="quiz-desc">${quiz.description || ''}</p>
+                    <div class="quiz-meta">
+                        <span>Created: ${new Date(quiz.created_at).toLocaleDateString()}</span>
+                        <span class="quiz-status">${quiz.status ?? 'Draft'}</span>
+                    </div>
+                    <div class="quiz-card-actions">
+                        <button class="btn btn-small btn-secondary edit-btn" data-id="${quiz.id}">Edit</button>
+                        <button class="btn btn-small btn-secondary delete-btn" data-id="${quiz.id}">Delete</button>
+                        <button class="btn btn-small btn-primary take-btn" data-id="${quiz.id}">Take</button>
+                    </div>
+                `;
+                quizzesGrid.appendChild(quizCard);
+            });
+        } catch (error) {
+            console.error(error.response?.data || error);
+            quizzesGrid.innerHTML = '<p>Failed to load quizzes.</p>';
+        }
+    }
+
+    fetchQuizzes();
+
+    // Filter tugmalari
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+
+            const filter = this.dataset.filter;
+            const quizCards = document.querySelectorAll('.quiz-card');
+
+            quizCards.forEach(card => {
+                const status = card.querySelector('.quiz-status').textContent.toLowerCase();
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else if (filter === 'published' && status === 'published') {
+                    card.style.display = 'block';
+                } else if (filter === 'mine') {
+                    // Agar kerak bo‘lsa, 'created_by_me' flag backenddan qo‘shish mumkin
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     });
+
 </script>
-</body>
-</html>
+<x-footer></x-footer>

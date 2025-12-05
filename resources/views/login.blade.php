@@ -38,11 +38,37 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
-    document.querySelector('.login-form').addEventListener('submit', function(e) {
+
+    document.querySelector('.login-form').addEventListener('submit', async function(e) {
         e.preventDefault();
-        window.location.href = 'dashboard.html';
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/api/login", {
+                email: email,
+                password: password
+            });
+
+            // Token olish
+            const token = response.data.token;
+
+            // Tokenni browserga saqlab qo'yamiz
+            localStorage.setItem("token", token);
+
+            // Dashboardga o'tkazamiz
+            window.location.href = "/dashboard";
+
+        } catch (error) {
+            alert("Email yoki parol noto‘g‘ri!");
+            console.error(error);
+        }
     });
 </script>
+
 </body>
 </html>

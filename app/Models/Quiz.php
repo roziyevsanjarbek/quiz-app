@@ -13,4 +13,16 @@ class Quiz extends Model
         'title',
         'description',
     ];
+
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
+    // Quiz.php
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }
