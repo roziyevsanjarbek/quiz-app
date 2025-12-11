@@ -7,16 +7,27 @@ use Illuminate\Http\Request;
 
 class QuizController extends Controller
 {
-
+    /**
+     * @OA\Get(
+     *     path="/api/quizzes",
+     *     summary="Get authenticated user's quizzes",
+     *     security={{"sanctum":{}}},
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of quizzes"
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function index()
     {
-        // Foydalanuvchi tizimga kirganligini tekshirish
         $user = auth()->user();
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        // Foydalanuvchiga tegishli quizlarni savollar va variantlar bilan olish
         $quizzes = $user->quizzes()->with('questions.options')->orderBy('created_at', 'desc')->get();
 
         return response()->json([
@@ -25,6 +36,24 @@ class QuizController extends Controller
         ], 200);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/quizzes/{id}",
+     *     summary="Get one quiz by ID",
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Quiz ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(response=200, description="Quiz fetched successfully"),
+     *     @OA\Response(response=404, description="Quiz not found")
+     * )
+     */
     public function show($id)
     {
         $quiz = Quiz::with('questions.options')->findOrFail($id);
@@ -36,6 +65,39 @@ class QuizController extends Controller
     }
 
 
+    /**
+     * @OA\Post(
+     *     path="/api/quizzes",
+     *     summary="Create a new quiz",
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"title","questions"},
+     *             @OA\Property(property="title", type="string", example="My Quiz"),
+     *             @OA\Property(property="description", type="string", example="About Laravel"),
+     *             @OA\Property(
+     *                 property="questions",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="question_text", type="string", example="Laravel nima?"),
+     *                     @OA\Property(property="type", type="string", example="multiple_choice"),
+     *                     @OA\Property(
+     *                         property="options",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="option_text", type="string", example="PHP freymvork"),
+     *                             @OA\Property(property="is_correct", type="boolean", example=true)
+     *                         )
+     *                     )
+     *                 )
+     *             ),
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Quiz created successfully")
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -49,14 +111,11 @@ class QuizController extends Controller
             'questions.*.options.*.is_correct' => 'required|boolean',
         ]);
 
-
-        // Quiz yaratish
         $quiz = auth()->user()->quizzes()->create([
             'title' => $request->title,
             'description' => $request->description,
         ]);
 
-        // Questions va Options yaratish
         foreach ($request->questions as $q) {
             $question = $quiz->questions()->create([
                 'question_text' => $q['question_text'],
@@ -79,6 +138,47 @@ class QuizController extends Controller
         ], 201);
     }
 
+
+    /**
+     * @OA\Post (
+     *     path="/api/quizzes/{quizId}",
+     *     summary="Update quiz",
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="quizId",
+     *         in="path",
+     *         description="Quiz ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=3)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Quiz update data",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="title", type="string", example="Updated Quiz"),
+     *             @OA\Property(property="description", type="string", example="Updated description"),
+     *             @OA\Property(
+     *                 property="questions",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="question_text", type="string", example="Updated question text"),
+     *                     @OA\Property(property="type", type="string", example="multiple_choice"),
+     *                     @OA\Property(
+     *                         property="options",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="option_text", type="string", example="Updated option text"),
+     *                             @OA\Property(property="is_correct", type="boolean", example=false)
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Quiz updated successfully")
+     * )
+     */
     public function update(Request $request, $quizId)
     {
         $request->validate([
@@ -92,23 +192,18 @@ class QuizController extends Controller
             'questions.*.options.*.is_correct' => 'required|boolean',
         ]);
 
-
-        // Quiz topish va foydalanuvchi egasi tekshirish
         $quiz = auth()->user()->quizzes()->findOrFail($quizId);
 
-        // Quizni yangilash
         $quiz->update([
             'title' => $request->title,
             'description' => $request->description,
         ]);
 
-        // Eski savollar va ularning optionslarini o'chirish
-        $quiz->questions()->each(function($question) {
+        $quiz->questions()->each(function ($question) {
             $question->options()->delete();
             $question->delete();
         });
 
-        // Yangi Questions va Options yaratish
         foreach ($request->questions as $q) {
             $question = $quiz->questions()->create([
                 'question_text' => $q['question_text'],
@@ -129,22 +224,35 @@ class QuizController extends Controller
             'message' => 'Quiz updated successfully',
             'quiz' => $quiz->load('questions.options')
         ], 200);
+    }
 
-        }
 
-    // QuizController.php
+    /**
+     * @OA\Delete(
+     *     path="/api/quizzes/{quizId}",
+     *     summary="Delete quiz",
+     *     security={{"sanctum":{}}},
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="quizId",
+     *         in="path",
+     *         description="Quiz ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=3)
+     *     ),
+     *     @OA\Response(response=200, description="Quiz deleted")
+     * )
+     */
     public function destroy($quizId)
     {
-        // Foydalanuvchi o'z quizini o'chira olishini tekshirish
         $quiz = auth()->user()->quizzes()->findOrFail($quizId);
 
-        // Quizga tegishli savollar va ularning optionslarini o'chirish
-        $quiz->questions()->each(function($question) {
+        $quiz->questions()->each(function ($question) {
             $question->options()->delete();
             $question->delete();
         });
 
-        // Quizni o'chirish
         $quiz->delete();
 
         return response()->json([
@@ -152,9 +260,18 @@ class QuizController extends Controller
         ], 200);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/all-quizzes",
+     *     summary="Get all quizzes with question count",
+     *     tags={"Quizzes"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(response=200, description="All quizzes fetched successfully")
+     * )
+     */
     public function allQuizzes()
     {
-        // Barcha quizlarni savollar soni bilan qaytarish
         $quizzes = Quiz::withCount('questions')->get();
 
         return response()->json([
@@ -163,9 +280,20 @@ class QuizController extends Controller
         ]);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/quiz/{quizId}/{questionId}",
+     *     summary="Get single question of a quiz",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(name="quizId", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(name="questionId", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Question fetched"),
+     *     @OA\Response(response=404, description="Not found")
+     * )
+     */
     public function getQuizQuestion($quizId, $questionId)
     {
-        // Avvalo quizni topamiz
         $quiz = Quiz::find($quizId);
 
         if (!$quiz) {
@@ -175,7 +303,6 @@ class QuizController extends Controller
             ], 404);
         }
 
-        // Quizga tegishli savolni topamiz
         $question = $quiz->questions()
             ->with('options')
             ->where('id', $questionId)
@@ -200,9 +327,18 @@ class QuizController extends Controller
     }
 
 
+    /**
+     * @OA\Get(
+     *     path="/api/get-question-id/{quizId}",
+     *     summary="Get first question ID of a quiz",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(name="quizId", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="First question ID"),
+     *     @OA\Response(response=404, description="Questions not found")
+     * )
+     */
     public function getFirstQuestionId($quizId)
     {
-        // Quiz ichidan eng birinchi savolni olamiz
         $firstQuestion = \App\Models\Question::where('quiz_id', $quizId)
             ->orderBy('id', 'asc')
             ->first();
@@ -219,7 +355,4 @@ class QuizController extends Controller
             'question_id' => $firstQuestion->id
         ]);
     }
-
-
-
 }

@@ -6,8 +6,42 @@ use Illuminate\Http\Request;
 
 class QuizUploadController extends Controller
 {
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/quiz/upload",
+     *     summary="Upload a PDF file and automatically generate a quiz",
+     *     description="PDF-ni yuklab, undan savollar va variantlarni avtomatik ajratib, quiz yaratadi.",
+     *     tags={"Quiz Upload"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"file"},
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="PDF fayl (max 20MB)"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="questions_count",
+     *                     type="integer",
+     *                     description="PDF dan nechta savolni random tanlab olish"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quiz created successfully"
+     *     )
+     * )
+     */
     public function uploadAndParsePdf(Request $request)
     {
         // Validatsiya
@@ -87,7 +121,6 @@ class QuizUploadController extends Controller
 
             $options = $q['options'];
 
-            // To'g'ri javobni random boshqa variantga o'tkazish
             shuffle($options); // variantlarni aralashtiramiz
             foreach ($options as $o) {
                 $question->options()->create($o);
@@ -105,6 +138,34 @@ class QuizUploadController extends Controller
 
 
 
+    /**
+     * @OA\Post(
+     *     path="/api/upload-pdf",
+     *     summary="Upload PDF file only",
+     *     description="PDF faylni serverga yuklash, lekin quiz yaratmaydi.",
+     *     tags={"Quiz Upload"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"file"},
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="PDF fayl"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=200, description="PDF uploaded successfully")
+     * )
+     */
     public function uploadPdf(Request $request)
     {
         // Validatsiya
@@ -112,29 +173,41 @@ class QuizUploadController extends Controller
             'file' => 'required|mimes:pdf|max:20480', // max 20 MB
         ]);
 
-        // Papka mavjud bo‘lmasa — yaratamiz
         if (!is_dir(storage_path('app/public/quiz_uploads/'))) {
             mkdir(storage_path('app/public/quiz_uploads/'), 0777, true);
         }
 
-        // Faylni storage/app/quiz_uploads ga saqlaymiz
         $path = $request->file('file')->store('quiz_uploads');
 
-        // Serverdagi to'liq path
         $fullPath = storage_path('app/' . $path);
 
         return response()->json([
             'message' => 'PDF uploaded successfully',
-            'path' => $path,          // Masalan: quiz_uploads/abc.pdf
-            'full_path' => $fullPath, // Serverdagi to'liq yo'l
+            'path' => $path,
+            'full_path' => $fullPath,
         ]);
     }
 
 
+
+    /**
+     * @OA\Get(
+     *     path="/api/quiz/upload",
+     *     summary="List uploaded quiz PDF files",
+     *     description="Yuklangan PDF fayllarni ro‘yxatini qaytaradi.",
+     *     tags={"Quiz Upload"},
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Uploaded files retrieved successfully"
+     *     )
+     * )
+     */
     public function getUploadedFiles()
     {
         $directory = storage_path('app/public/quiz_uploads');
-        // Papka mavjudligini tekshirish
+
         if (!is_dir($directory)) {
             return response()->json([
                 'message' => 'No uploaded files found',
@@ -159,8 +232,6 @@ class QuizUploadController extends Controller
             'message' => 'Uploaded files retrieved successfully',
             'files' => $uploadedFiles
         ]);
-
-
     }
-
 }
+

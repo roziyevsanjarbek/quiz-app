@@ -14,7 +14,34 @@ use Illuminate\Support\Facades\DB;
 
 class QuizAttemptController extends Controller
 {
-    // Quiz boshlash
+    /**
+     * @OA\Post(
+     *     path="/api/quiz/{quiz}/start",
+     *     summary="Start a quiz attempt",
+     *     tags={"Quiz Attempts"},
+     *     @OA\Parameter(
+     *         name="quiz",
+     *         in="path",
+     *         required=true,
+     *         description="Quiz ID",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"full_name"},
+     *             @OA\Property(property="full_name", type="string", example="Ro'ziyev Sanjarbek")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quiz attempt started",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="attempt_id", type="integer", example=5)
+     *         )
+     *     )
+     * )
+     */
     public function start(Request $request, Quiz $quiz)
     {
         $request->validate([
@@ -33,6 +60,32 @@ class QuizAttemptController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/attempts/answer",
+     *     summary="Submit an answer for a question",
+     *     tags={"Quiz Attempts"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"attempt_id","question_id","selected_option_id"},
+     *             @OA\Property(property="attempt_id", type="integer", example=3),
+     *             @OA\Property(property="question_id", type="integer", example=10),
+     *             @OA\Property(property="selected_option_id", type="integer", example=42)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Answer stored",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="your_answer", type="string", example="Laravel is a PHP framework"),
+     *             @OA\Property(property="is_correct", type="boolean", example=true),
+     *             @OA\Property(property="correct_answer", type="string", example="Laravel is a PHP framework"),
+     *             @OA\Property(property="correct_option_id", type="integer", example=42)
+     *         )
+     *     )
+     * )
+     */
     public function answerQuestion(Request $request)
     {
         $request->validate([
@@ -43,7 +96,6 @@ class QuizAttemptController extends Controller
 
         $attempt = QuizAttempt::findOrFail($request->attempt_id);
         $question = Question::findOrFail($request->question_id);
-
         $selectedOption = Option::findOrFail($request->selected_option_id);
 
         $correctOption = Option::where('question_id', $question->id)
@@ -52,12 +104,10 @@ class QuizAttemptController extends Controller
 
         $isCorrect = $selectedOption->id == $correctOption->id;
 
-        //🔥 Eski javobni o‘chiramiz
         AttemptAnswer::where('attempt_id', $attempt->id)
             ->where('question_id', $question->id)
             ->delete();
 
-        //🔥 Yangi javobni create qilamiz
         AttemptAnswer::create([
             'attempt_id' => $attempt->id,
             'question_id' => $question->id,
@@ -73,8 +123,31 @@ class QuizAttemptController extends Controller
         ]);
     }
 
-
-
+    /**
+     * @OA\Post(
+     *     path="/api/quiz/finish",
+     *     summary="Finish quiz attempt and calculate results",
+     *     tags={"Quiz Attempts"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"attempt_id"},
+     *             @OA\Property(property="attempt_id", type="integer", example=3)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quiz completed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="full_name", type="string", example="Ro'ziyev Sanjarbek"),
+     *             @OA\Property(property="correct", type="integer", example=7),
+     *             @OA\Property(property="wrong", type="integer", example=3),
+     *             @OA\Property(property="total", type="integer", example=10),
+     *             @OA\Property(property="percentage", type="number", example=70.00)
+     *         )
+     *     )
+     * )
+     */
     public function finish(Request $request)
     {
         $request->validate([
@@ -83,7 +156,7 @@ class QuizAttemptController extends Controller
 
         $attempt = QuizAttempt::findOrFail($request->attempt_id);
 
-        $totalQuestions = $attempt->quiz->questions()->count(); // quizdagi jami savollar
+        $totalQuestions = $attempt->quiz->questions()->count();
         $correct = $attempt->answers()->where('is_correct', true)->count();
         $wrong = $totalQuestions - $correct;
 
@@ -100,12 +173,22 @@ class QuizAttemptController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/attempt-answers",
+     *     summary="Get all attempts with answers",
+     *     tags={"Quiz Attempts"},
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Attempts fetched successfully"
+     *     )
+     * )
+     */
     public function getAllAttemptAnswers()
     {
-        // Attemptlar bilan quiz va answers relationlarini yuklaymiz
         $attempts = Attempt::with(['quiz', 'answers'])->get();
 
-        // Har bir attempt uchun to'g'ri javoblar sonini hisoblaymiz
         $attempts = $attempts->map(function ($attempt) {
             $attempt->correct_answers_count = $attempt->answers->where('is_correct', 1)->count();
             return $attempt;
@@ -117,26 +200,34 @@ class QuizAttemptController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/attempts",
+     *     summary="Get average quiz progress",
+     *     tags={"Quiz Attempts"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Progress data"
+     *     )
+     * )
+     */
     public function get()
     {
-        $attempt = Attempt::query()->count();
-        $attempts = Attempt::query()->with([ 'answers'])->get();
+        $attempts = Attempt::query()->with(['answers'])->get();
         $count = 0;
         $counts = 0;
+
         foreach ($attempts as $attempt) {
             $progress = ($attempt->score / $attempt->total_questions) * 100;
             $count = $count + $progress;
             $counts++;
         }
+
         $progress = ceil($count / $counts);
 
         return response()->json([
             'progress' => $progress . '%',
             'count' => $counts
         ]);
-
     }
-
-
-
 }

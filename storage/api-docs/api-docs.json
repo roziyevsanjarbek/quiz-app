@@ -1,0 +1,812 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My API Documentation",
+        "description": "Laravel API Swagger documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login user and get token",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "superadmin@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|JDSHFJSHFJSFHJSFJHSF"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get authenticated user profile",
+                "operationId": "d32e56b6274eb68e980da6d91fbe9fd8",
+                "responses": {
+                    "200": {
+                        "description": "User profile data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Ro'ziyev Sanjarbek"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "test@example.com"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout user (invalidate token)",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/quiz/{quiz}/start": {
+            "post": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Start a quiz attempt",
+                "operationId": "a5a5006c40ee1965d2867f353fb1ba32",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "full_name"
+                                ],
+                                "properties": {
+                                    "full_name": {
+                                        "type": "string",
+                                        "example": "Ro'ziyev Sanjarbek"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz attempt started",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "attempt_id": {
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/attempts/answer": {
+            "post": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Submit an answer for a question",
+                "operationId": "d8f994d4fc2f275c565a0a1c270218f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "attempt_id",
+                                    "question_id",
+                                    "selected_option_id"
+                                ],
+                                "properties": {
+                                    "attempt_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "question_id": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "selected_option_id": {
+                                        "type": "integer",
+                                        "example": 42
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Answer stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "your_answer": {
+                                            "type": "string",
+                                            "example": "Laravel is a PHP framework"
+                                        },
+                                        "is_correct": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "correct_answer": {
+                                            "type": "string",
+                                            "example": "Laravel is a PHP framework"
+                                        },
+                                        "correct_option_id": {
+                                            "type": "integer",
+                                            "example": 42
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/quiz/finish": {
+            "post": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Finish quiz attempt and calculate results",
+                "operationId": "88090d4a751820efb1b2c78201c388df",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "attempt_id"
+                                ],
+                                "properties": {
+                                    "attempt_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "full_name": {
+                                            "type": "string",
+                                            "example": "Ro'ziyev Sanjarbek"
+                                        },
+                                        "correct": {
+                                            "type": "integer",
+                                            "example": 7
+                                        },
+                                        "wrong": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "percentage": {
+                                            "type": "number",
+                                            "example": 70
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/attempt-answers": {
+            "get": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Get all attempts with answers",
+                "operationId": "41ef67125ca5e0fbf33a09a1ac7b625d",
+                "responses": {
+                    "200": {
+                        "description": "Attempts fetched successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/attempts": {
+            "get": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Get average quiz progress",
+                "operationId": "fd4fef9332085dbd4484bbaab91184e2",
+                "responses": {
+                    "200": {
+                        "description": "Progress data"
+                    }
+                }
+            }
+        },
+        "/api/quizzes": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Get authenticated user's quizzes",
+                "operationId": "eb9ba15b35ba53ab91ba8b1a4e215e29",
+                "responses": {
+                    "200": {
+                        "description": "List of quizzes"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Create a new quiz",
+                "operationId": "2513a2f792e5c3a5bccd78eb9b4e3786",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "questions"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "My Quiz"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "About Laravel"
+                                    },
+                                    "questions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_text": {
+                                                    "type": "string",
+                                                    "example": "Laravel nima?"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "multiple_choice"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "option_text": {
+                                                                "type": "string",
+                                                                "example": "PHP freymvork"
+                                                            },
+                                                            "is_correct": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Quiz created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/{id}": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Get one quiz by ID",
+                "operationId": "d34cf9a999162f1e8ea1b8cce62d7cd5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quiz fetched successfully"
+                    },
+                    "404": {
+                        "description": "Quiz not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/quizzes/{quizId}": {
+            "post": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Update quiz",
+                "operationId": "c2b003c1d9fe65f200fdd04690ab4b71",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Quiz update data",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Updated Quiz"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    },
+                                    "questions": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "question_text": {
+                                                    "type": "string",
+                                                    "example": "Updated question text"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "multiple_choice"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "option_text": {
+                                                                "type": "string",
+                                                                "example": "Updated option text"
+                                                            },
+                                                            "is_correct": {
+                                                                "type": "boolean",
+                                                                "example": false
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Delete quiz",
+                "operationId": "222a90065078af8dd7cfdd743b0c568c",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "description": "Quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quiz deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/all-quizzes": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Get all quizzes with question count",
+                "operationId": "6d54fc919d4655e9544310acb69da204",
+                "responses": {
+                    "200": {
+                        "description": "All quizzes fetched successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/quiz/{quizId}/{questionId}": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Get single question of a quiz",
+                "operationId": "b05a28f303bcaa861b1cc44c3876ab0f",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "questionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Question fetched"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/get-question-id/{quizId}": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Get first question ID of a quiz",
+                "operationId": "cd8005503c0d5524bb88078e6a8733cc",
+                "parameters": [
+                    {
+                        "name": "quizId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "First question ID"
+                    },
+                    "404": {
+                        "description": "Questions not found"
+                    }
+                }
+            }
+        },
+        "/api/quiz/upload": {
+            "get": {
+                "tags": [
+                    "Quiz Upload"
+                ],
+                "summary": "List uploaded quiz PDF files",
+                "description": "Yuklangan PDF fayllarni ro‘yxatini qaytaradi.",
+                "operationId": "b50d46fd9adab59d7bbc69b54b0b8106",
+                "responses": {
+                    "200": {
+                        "description": "Uploaded files retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Quiz Upload"
+                ],
+                "summary": "Upload a PDF file and automatically generate a quiz",
+                "description": "PDF-ni yuklab, undan savollar va variantlarni avtomatik ajratib, quiz yaratadi.",
+                "operationId": "79066e27b8074cb22f485129819ebe35",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF fayl (max 20MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "questions_count": {
+                                        "description": "PDF dan nechta savolni random tanlab olish",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/upload-pdf": {
+            "post": {
+                "tags": [
+                    "Quiz Upload"
+                ],
+                "summary": "Upload PDF file only",
+                "description": "PDF faylni serverga yuklash, lekin quiz yaratmaydi.",
+                "operationId": "36a9cdf303bd38a0da908cf223896807",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "PDF fayl",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "PDF uploaded successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Auth"
+        },
+        {
+            "name": "Quiz Attempts",
+            "description": "Quiz Attempts"
+        },
+        {
+            "name": "Quizzes",
+            "description": "Quizzes"
+        },
+        {
+            "name": "Quiz Upload",
+            "description": "Quiz Upload"
+        }
+    ]
+}
