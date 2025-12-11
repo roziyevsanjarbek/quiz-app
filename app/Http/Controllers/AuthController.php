@@ -17,8 +17,7 @@ class AuthController extends Controller
 
         $user = User::query()->where('email', $validator['email'])->first();
 
-        // Agar foydalanuvchi topilmagan yoki password noto'g'ri
-        if(!$user || !Hash::check($validator['password'], $user->password)){
+        if(!$user || Hash::check($validator['password'], $user->password)){
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -28,8 +27,8 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token
         ], 200);
-    }
 
+    }
 
     public function profile()
     {
