@@ -5,11 +5,6 @@
         <x-navbar></x-navbar>
 
         <div class="quizzes-content">
-            <div class="filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="mine">Created by me</button>
-                <button class="filter-btn" data-filter="published">Published</button>
-            </div>
 
             <div class="quizzes-grid" id="quizzesGrid">
                 <!-- Quizlar JS orqali shu yerga qo‘shiladi -->
@@ -63,6 +58,19 @@
 
     fetchQuizzes();
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const quizzesGrid = document.getElementById("quizzesGrid"); // sizning quiz container
+
+        // Dinamik Edit buttonlar uchun event delegation
+        quizzesGrid.addEventListener("click", function(e) {
+            if (e.target && e.target.classList.contains("edit-btn")) {
+                const quizId = e.target.getAttribute("data-id");
+                // Yangi sahifaga yo'naltirish
+                window.location.href = `/update-quizzes?quiz_id=${quizId}`;
+            }
+        });
+    });
+
     // Filter tugmalari
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -87,6 +95,52 @@
             });
         });
     });
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const quizzesGrid = document.getElementById("quizzesGrid");
+        const token = localStorage.getItem('token');
+
+        // Quizzesni fetch qilish
+        fetchQuizzes();
+
+        // Dinamik Edit va Delete buttonlar uchun event delegation
+        quizzesGrid.addEventListener("click", function(e) {
+            const quizId = e.target.getAttribute("data-id");
+
+            // Edit button
+            if (e.target.classList.contains("edit-btn")) {
+                window.location.href = `http://localhost:8000/update-quizzes?quiz_id=${quizId}`;
+            }
+
+            // Delete button
+            if (e.target.classList.contains("delete-btn")) {
+                if (!confirm("Are you sure you want to delete this quiz?")) return;
+
+                axios.delete(`/api/quizzes/${quizId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(res => {
+                        alert(res.data.message);
+                        // Quiz DOMdan o'chirish
+                        e.target.closest('.quiz-card').remove();
+                    })
+                    .catch(err => {
+                        console.error(err.response?.data || err);
+                        alert('Failed to delete quiz.');
+                    });
+            }
+
+            // Take quiz button (misol uchun)
+            if (e.target.classList.contains("take-btn")) {
+                window.location.href = `/take-quiz/${quizId}`;
+            }
+        });
+    });
+
 
 </script>
 <x-footer></x-footer>

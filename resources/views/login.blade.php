@@ -56,9 +56,10 @@
 
             // Token olish
             const token = response.data.token;
-
+            const userName = response.data.user.name;
             // Tokenni browserga saqlab qo'yamiz
             localStorage.setItem("token", token);
+            localStorage.setItem('userName', userName);
 
             // Dashboardga o'tkazamiz
             window.location.href = "/dashboard";

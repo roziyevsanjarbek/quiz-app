@@ -23,7 +23,24 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token], 200);
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ], 200);
+
+    }
+
+    public function profile()
+    {
+        $user = auth()->user();
+        return response()->json($user);
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json(['message' => 'Logged out successfully']);
 
     }
 }

@@ -3,197 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jasur Abdullayev - Frontend Developer</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>QuizMaster - Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #ffffff;
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Sidebar olib tashlandi, oddiy layout */
+        .admin-layout {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Topbar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon { font-size: 28px; }
+        .logo-text { font-size: 20px; font-weight: 700; color: #3b82f6; }
+
+        .topbar-right { position: relative; }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .profile-name { font-weight: 500; color: #1e293b; }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 160px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            padding: 8px 0;
+            z-index: 999;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .dropdown-item:hover { background: #f3f3f3; }
+        .logout { color: #d00; }
+        .hidden { display: none; }
+
+        /* Profile Section */
+        .profile-section {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .profile-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .profile-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .profile-header p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .profile-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input {
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #3b82f6;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group { flex: 1; }
+
+        .btn-save {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 12px;
+        }
+
+        .btn-save:hover { background: #2563eb; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-item .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+
+        .stat-item .label {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        footer {
+            background: #f8fafc;
+            padding: 16px 24px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        footer p { color: #64748b; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .profile-card { padding: 20px; }
+            .form-row { flex-direction: column; gap: 20px; }
+            .stats-grid { grid-template-columns: 1fr; }
+            .profile-name { display: none; }
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="profile-header">
-            <img src="/placeholder.svg?height=120&width=120" alt="Profile photo" class="avatar">
-            <h1 class="name">Jasur Abdullayev</h1>
-            <p class="title">Frontend Developer</p>
-            <p class="tagline">Zamonaviy va foydalanuvchilarga qulay web ilovalar yarataman</p>
+<div class="admin-layout">
+    <!-- Sidebar olib tashlandi, topbar qoldi -->
+    <nav class="topbar">
+        <div class="topbar-left">
+            <span class="logo-icon">📚</span>
+            <span class="logo-text">QuizMaster</span>
         </div>
-
-        <nav class="nav-links">
-            <a href="#about" class="nav-link active">
-                <span class="nav-indicator"></span>
-                Men haqimda
-            </a>
-            <a href="#experience" class="nav-link">
-                <span class="nav-indicator"></span>
-                Tajriba
-            </a>
-            <a href="#projects" class="nav-link">
-                <span class="nav-indicator"></span>
-                Loyihalar
-            </a>
-        </nav>
-
-        <div class="social-links">
-            <a href="#" class="social-link" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="LinkedIn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="Twitter">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
-            </a>
-            <a href="#" class="social-link" aria-label="Telegram">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-            </a>
+        <div class="topbar-right">
+            <div class="user-profile" id="profileBtn">
+                <div class="profile-avatar">JD</div>
+                <span class="profile-name">John Doe</span>
+            </div>
+            <div class="dropdown-menu hidden" id="dropdownMenu">
+                <a href="/profile" class="dropdown-item">👤 Profile</a>
+                <a href="/" class="dropdown-item logout">🔚 Logout</a>
+            </div>
         </div>
-    </aside>
+    </nav>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- About Section -->
-        <section id="about" class="section">
-            <p class="intro-text">
-                Men <strong>chiroyli va qulay</strong> foydalanuvchi interfeyslarini yaratishga ishtiyoqli dasturchiman.
-                Mening ishim dizayn va dasturlash kesishmasida joylashgan — nafaqat yaxshi ko'rinadigan, balki
-                <strong>tez va samarali</strong> ishlaydigan ilovalar yarataman.
-            </p>
-            <p class="intro-text">
-                Hozirda <strong class="highlight">TechCorp</strong> kompaniyasida Senior Frontend Developer lavozimida ishlayman.
-                Bu yerda men UI komponentlarini yaratish va texnik qo'llab-quvvatlash bilan shug'ullanaman.
-            </p>
-            <p class="intro-text">
-                Bo'sh vaqtlarimda yangi texnologiyalarni o'rganaman, open-source loyihalarga hissa qo'shaman
-                va yoshlarga dasturlash bo'yicha mentorlik qilaman.
-            </p>
-        </section>
+    <section class="profile-section">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar-large">JD</div>
+                <h1>John Doe</h1>
+                <p>Admin • A'zo bo'lgan: 01.01.2025</p>
+            </div>
 
-        <!-- Experience Section -->
-        <section id="experience" class="section">
-            <h2 class="section-title">Tajriba</h2>
-
-            <div class="experience-item">
-                <div class="experience-date">2022 — Hozir</div>
-                <div class="experience-content">
-                    <h3 class="experience-title">
-                        Senior Frontend Developer · <a href="#" class="company-link">TechCorp</a>
-                    </h3>
-                    <p class="experience-description">
-                        Kompaniyaning asosiy mahsulotlari uchun frontend arxitekturasini loyihalash va ishlab chiqish.
-                        Cross-functional jamoalar bilan ishlash va yangi texnologiyalarni joriy etish.
-                    </p>
-                    <div class="skills-list">
-                        <span class="skill-tag">React</span>
-                        <span class="skill-tag">TypeScript</span>
-                        <span class="skill-tag">Next.js</span>
-                        <span class="skill-tag">Tailwind CSS</span>
+            <form class="profile-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ism</label>
+                        <input type="text" value="John" placeholder="Ismingizni kiriting">
                     </div>
                 </div>
-            </div>
 
-            <div class="experience-item">
-                <div class="experience-date">2020 — 2022</div>
-                <div class="experience-content">
-                    <h3 class="experience-title">
-                        Frontend Developer · <a href="#" class="company-link">StartupHub</a>
-                    </h3>
-                    <p class="experience-description">
-                        E-commerce platformasi uchun foydalanuvchi interfeysini yaratish.
-                        Performance optimizatsiyasi va mobile-responsive dizayn ishlab chiqish.
-                    </p>
-                    <div class="skills-list">
-                        <span class="skill-tag">Vue.js</span>
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">SCSS</span>
-                        <span class="skill-tag">Figma</span>
-                    </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" value="john.doe@example.com" placeholder="Email manzilingiz">
                 </div>
+
+                <button type="button" id="exit" class="btn-save">🔚 Ortga</button>
+            </form>
+
+            <div class="stats-grid">
+
             </div>
+        </div>
+    </section>
 
-            <div class="experience-item">
-                <div class="experience-date">2018 — 2020</div>
-                <div class="experience-content">
-                    <h3 class="experience-title">
-                        Junior Developer · <a href="#" class="company-link">WebAgency</a>
-                    </h3>
-                    <p class="experience-description">
-                        Turli mijozlar uchun web saytlar va landing pagelar yaratish.
-                        HTML, CSS va JavaScript asoslarini chuqur o'rganish.
-                    </p>
-                    <div class="skills-list">
-                        <span class="skill-tag">HTML</span>
-                        <span class="skill-tag">CSS</span>
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">WordPress</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="section">
-            <h2 class="section-title">Loyihalar</h2>
-
-            <div class="projects-grid">
-                <article class="project-card">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=350" alt="Dashboard loyihasi">
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Admin Dashboard</h3>
-                        <p class="project-description">
-                            Zamonaviy admin panel loyihasi. Real-time ma'lumotlar va interaktiv grafiklar.
-                        </p>
-                        <div class="skills-list">
-                            <span class="skill-tag">React</span>
-                            <span class="skill-tag">Chart.js</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=350" alt="E-commerce loyihasi">
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">E-commerce Platform</h3>
-                        <p class="project-description">
-                            To'liq funksional onlayn do'kon. Savat, to'lov va buyurtma kuzatish tizimlari.
-                        </p>
-                        <div class="skills-list">
-                            <span class="skill-tag">Next.js</span>
-                            <span class="skill-tag">Stripe</span>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="project-card">
-                    <div class="project-image">
-                        <img src="/placeholder.svg?height=200&width=350" alt="Task Manager loyihasi">
-                    </div>
-                    <div class="project-content">
-                        <h3 class="project-title">Task Manager</h3>
-                        <p class="project-description">
-                            Kanban uslubidagi vazifalarni boshqarish ilovasi. Drag-and-drop funksiyasi.
-                        </p>
-                        <div class="skills-list">
-                            <span class="skill-tag">Vue.js</span>
-                            <span class="skill-tag">Firebase</span>
-                        </div>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section id="contact" class="section contact-section">
-            <h2 class="section-title">Bog'lanish</h2>
-            <p class="contact-text">
-                Yangi loyihalar yoki hamkorlik uchun men bilan bog'laning:
-            </p>
-            <a href="mailto:jasur@example.com" class="contact-email">jasur@example.com</a>
-        </section>
-    </main>
+    <footer>
+        <p>© 2025 QuizMaster. Barcha huquqlar himoyalangan.</p>
+    </footer>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const profileAvatar = document.querySelector(".profile-avatar");
+        const profileAvatarLarge = document.querySelector(".profile-avatar-large");
+        const profileName = document.querySelector(".profile-name");
+        const profileHeaderName = document.querySelector(".profile-header h1");
+        const profileHeaderInfo = document.querySelector(".profile-header p");
+        const inputName = document.querySelector('input[type="text"]');
+        const inputEmail = document.querySelector('input[type="email"]');
+
+        // Token localStorage dan olish
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            alert("Siz login qilmagansiz!");
+            window.location.href = "index.html";
+            return;
+        }
+
+        try {
+            const response = await axios.get("http://127.0.0.1:8000/api/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const user = response.data; // to‘g‘ridan-to‘g‘ri object
+
+            // Avatar uchun ism bosh harfi
+            const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            profileAvatar.textContent = initials;
+            profileAvatarLarge.textContent = initials;
+
+            // Ism va email
+            profileName.textContent = user.name;
+            profileHeaderName.textContent = user.name;
+            profileHeaderInfo.textContent = `Admin • A'zo bo'lgan: ${user.created_at || ''}`;
+            inputName.value = user.name;
+            inputEmail.value = user.email;
+
+
+        } catch (error) {
+            console.error(error);
+            alert("Profil ma'lumotlarini olishda xatolik yuz berdi!");
+        }
+    });
+    const profileBtn = document.getElementById('profileBtn');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    profileBtn.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!profileBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+    document.getElementById('exit').addEventListener('click', () => {
+        window.location.href = "/dashboard";
+    });
+</script>
 </body>
 </html>

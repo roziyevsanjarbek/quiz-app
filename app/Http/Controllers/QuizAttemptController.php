@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuizAttempt;
 use Illuminate\Http\Request;
 use App\Models\Quiz;
 use App\Models\Attempt;
@@ -14,92 +15,128 @@ use Illuminate\Support\Facades\DB;
 class QuizAttemptController extends Controller
 {
     // Quiz boshlash
-    public function start(Quiz $quiz)
+    public function start(Request $request, Quiz $quiz)
     {
-        // Foydalanuvchi allaqachon boshlagan bo‘lsa, shu attemptni qaytarish
-        $attempt = Attempt::firstOrCreate(
-            ['quiz_id' => $quiz->id, 'user_id' => Auth::id(), 'finished_at' => null],
-            ['started_at' => now()]
-        );
-
-        // Quiz va savollar bilan blade qaytarish
-        $questions = $quiz->questions()->with('options')->get();
-
-        return view('quiz.attempt', compact('quiz', 'questions', 'attempt'));
-    }
-
-    // Quiz submit (javoblarni saqlash)
-    public function submit(Request $request, Quiz $quiz)
-    {
-        $attempt = Attempt::where('quiz_id', $quiz->id)
-            ->where('user_id', Auth::id())
-            ->whereNull('finished_at')
-            ->firstOrFail();
-
         $request->validate([
-            'answers' => 'required|array'
+            'full_name' => 'required|string|max:255'
         ]);
 
-        DB::beginTransaction();
-        try {
-            $score = 0;
+        $attempt = QuizAttempt::create([
+            'quiz_id' => $quiz->id,
+            'full_name' => $request->full_name,
+            'total_questions' => $quiz->questions()->count()
+        ]);
 
-            foreach ($request->answers as $questionId => $answerData) {
-                $question = Question::findOrFail($questionId);
-
-                if ($question->type === 'multiple_choice') {
-                    $selectedOptionId = $answerData['selected_option_id'] ?? null;
-                    $option = Option::find($selectedOptionId);
-
-                    $isCorrect = $option ? $option->is_correct : false;
-                    if ($isCorrect) $score++;
-
-                    AttemptAnswer::updateOrCreate(
-                        ['attempt_id' => $attempt->id, 'question_id' => $questionId],
-                        [
-                            'selected_option_id' => $selectedOptionId,
-                            'is_correct' => $isCorrect,
-                        ]
-                    );
-                } else {
-                    // text savollar
-                    $answerText = $answerData['answer_text'] ?? null;
-
-                    AttemptAnswer::updateOrCreate(
-                        ['attempt_id' => $attempt->id, 'question_id' => $questionId],
-                        [
-                            'answer_text' => $answerText,
-                        ]
-                    );
-                }
-            }
-
-            // Attemptni update qilish
-            $attempt->update([
-                'finished_at' => now(),
-                'score' => $score
-            ]);
-
-            DB::commit();
-
-            return redirect()->route('quiz.results', $quiz)->with('success', 'Quiz submitted successfully!');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => $e->getMessage()]);
-        }
+        return response()->json([
+            'attempt_id' => $attempt->id,
+            'quiz' => $quiz->load('questions.options')
+        ]);
     }
 
-    // Natijalar
-    public function results(Quiz $quiz)
+    public function answerQuestion(Request $request)
     {
-        $attempt = Attempt::where('quiz_id', $quiz->id)
-            ->where('user_id', Auth::id())
-            ->latest()
-            ->firstOrFail();
+        $request->validate([
+            'attempt_id' => 'required|exists:quiz_attempts,id',
+            'question_id' => 'required|exists:questions,id',
+            'selected_option_id' => 'required|exists:options,id'
+        ]);
 
-        $answers = $attempt->attemptAnswers()->with('question.options')->get();
+        $attempt = QuizAttempt::findOrFail($request->attempt_id);
+        $question = Question::findOrFail($request->question_id);
 
-        return view('quiz.results', compact('quiz', 'attempt', 'answers'));
+        $selectedOption = Option::findOrFail($request->selected_option_id);
+
+        $correctOption = Option::where('question_id', $question->id)
+            ->where('is_correct', true)
+            ->first();
+
+        $isCorrect = $selectedOption->id == $correctOption->id;
+
+        //🔥 Eski javobni o‘chiramiz
+        AttemptAnswer::where('attempt_id', $attempt->id)
+            ->where('question_id', $question->id)
+            ->delete();
+
+        //🔥 Yangi javobni create qilamiz
+        AttemptAnswer::create([
+            'attempt_id' => $attempt->id,
+            'question_id' => $question->id,
+            'selected_option_id' => $selectedOption->id,
+            'is_correct' => $isCorrect,
+        ]);
+
+        return response()->json([
+            'your_answer' => $selectedOption->option_text,
+            'is_correct' => $isCorrect,
+            'correct_answer' => $correctOption->option_text,
+            'correct_option_id' => $correctOption->id,
+        ]);
     }
+
+
+
+    public function finish(Request $request)
+    {
+        $request->validate([
+            'attempt_id' => 'required|exists:quiz_attempts,id'
+        ]);
+
+        $attempt = QuizAttempt::findOrFail($request->attempt_id);
+
+        $totalQuestions = $attempt->quiz->questions()->count(); // quizdagi jami savollar
+        $correct = $attempt->answers()->where('is_correct', true)->count();
+        $wrong = $totalQuestions - $correct;
+
+        $attempt->update([
+            'score' => $correct
+        ]);
+
+        return response()->json([
+            'full_name' => $attempt->full_name,
+            'correct' => $correct,
+            'wrong' => $wrong,
+            'total' => $totalQuestions,
+            'percentage' => round(($correct / $totalQuestions) * 100, 2)
+        ]);
+    }
+
+    public function getAllAttemptAnswers()
+    {
+        // Attemptlar bilan quiz va answers relationlarini yuklaymiz
+        $attempts = Attempt::with(['quiz', 'answers'])->get();
+
+        // Har bir attempt uchun to'g'ri javoblar sonini hisoblaymiz
+        $attempts = $attempts->map(function ($attempt) {
+            $attempt->correct_answers_count = $attempt->answers->where('is_correct', 1)->count();
+            return $attempt;
+        });
+
+        return response()->json([
+            'message' => 'Attempts fetched successfully',
+            'attempts' => $attempts
+        ]);
+    }
+
+    public function get()
+    {
+        $attempt = Attempt::query()->count();
+        $attempts = Attempt::query()->with([ 'answers'])->get();
+        $count = 0;
+        $counts = 0;
+        foreach ($attempts as $attempt) {
+            $progress = ($attempt->score / $attempt->total_questions) * 100;
+            $count = $count + $progress;
+            $counts++;
+        }
+        $progress = ceil($count / $counts);
+
+        return response()->json([
+            'progress' => $progress . '%',
+            'count' => $counts
+        ]);
+
+    }
+
+
+
 }

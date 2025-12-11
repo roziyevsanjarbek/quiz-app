@@ -6,13 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Attempt extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'quiz_id',
-        'started_at',
-        'finished_at',
-        'score',
-    ];
+    protected $table = 'quiz_attempts';
+    protected $fillable = ['full_name', 'quiz_id', 'total_questions', 'score'];
 
     public function user()
     {
@@ -26,6 +21,6 @@ class Attempt extends Model
 
     public function answers()
     {
-        return $this->hasMany(AttemptAnswer::class);
+        return $this->hasMany(AttemptAnswer::class, 'attempt_id');
     }
 }

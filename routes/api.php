@@ -8,19 +8,31 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', [AuthController::class, 'profile']);
     Route::get('/quizzes', [QuizController::class, 'index']);
+    Route::get('/quizzes/{id}', [QuizController::class, 'show']);
+    Route::delete('/quizzes/{id}', [QuizController::class, 'destroy']);
     Route::post('/quizzes', [QuizController::class, 'store']);
     Route::post('/quizzes/{quizId}', [QuizController::class, 'update']);
-    Route::get('/quiz/{quiz}/start', [QuizAttemptController::class, 'start'])->name('quiz.start');
-    Route::post('/quiz/{quiz}/submit', [QuizAttemptController::class, 'submit'])->name('quiz.submit');
-    Route::get('/quiz/{quiz}/results', [QuizAttemptController::class, 'results'])->name('quiz.results');
     Route::get('/quiz/upload', [QuizUploadController::class, 'getUploadedFiles']);
     Route::post('/quiz/upload', [QuizUploadController::class, 'uploadAndParsePdf']);
     Route::post('/upload-pdf', [QuizUploadController::class, 'uploadPdf']);
-
-
+    Route::get('/attempt-answers', [QuizAttemptController::class, 'getAllAttemptAnswers']);
 
 });
+
+Route::post('/quiz/{quiz}/start', [QuizAttemptController::class, 'start']);
+Route::post('/attempts/answer', [QuizAttemptController::class, 'answerQuestion']);
+Route::post('/quiz/finish', [QuizAttemptController::class, 'finish']);
+
+Route::get('/attempts', [QuizAttemptController::class, 'get']);
+
+Route::get('/all-quizzes', [QuizController::class, 'allQuizzes']);
+Route::get('/get-question-id/{quizId}', [QuizController::class, 'getFirstQuestionId']);
+Route::get('/quiz/{quizId}/{questionId}', [QuizController::class, 'getQuizQuestion']);
+
+

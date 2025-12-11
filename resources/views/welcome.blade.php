@@ -23,25 +23,25 @@
 
     <main class="welcome-hero">
         <div class="hero-content">
-            <h1>Master Your Knowledge</h1>
-            <p>Create, share, and solve interactive quizzes. Learn smarter, not harder.</p>
-            <a href="{{ route('login') }}" class="btn btn-primary btn-large">Get Started</a>
+            <h1>O'z bilimlaringizni o'zlashtiring</h1>
+            <p>Interaktiv viktorinalarni yarating, baham ko'ring va hal qiling. Aqlliroq o'rganing, qiyinroq emas.</p>
+            <a href="/quizzes" class="btn btn-primary btn-large">Savollar</a>
         </div>
         <div class="hero-features">
             <div class="feature-card">
                 <div class="feature-icon">✨</div>
-                <h3>Create Quizzes</h3>
-                <p>Build custom quizzes with multiple question types</p>
+                <h3>Viktorinalar yaratish</h3>
+                <p>Bir nechta savol turlari bilan maxsus viktorinalar yarating</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🎯</div>
-                <h3>Take Tests</h3>
-                <p>Challenge yourself with interactive quizzes</p>
+                <h3>Testlarni topshiring</h3>
+                <p>Interaktiv viktorinalar bilan o'zingizni sinab ko'ring</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <h3>Track Progress</h3>
-                <p>Monitor your learning journey with detailed analytics</p>
+                <h3>Jarayonni kuzatish</h3>
+                <p>Batafsil tahlillar yordamida o'rganish sayohatingizni kuzatib boring</p>
             </div>
         </div>
     </main>

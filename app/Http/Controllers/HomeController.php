@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -14,6 +13,11 @@ class HomeController extends Controller
     public function login()
     {
         return view('login');
+    }
+
+    public function logout()
+    {
+        return redirect('/');
     }
 
     public function dashboard()
@@ -40,8 +44,33 @@ class HomeController extends Controller
         return view('upload-quiz');
     }
 
+    public function updateQuizzes()
+    {
+        return view('update-quiz');
+    }
+
     public  function profile()
     {
         return view('profile');
+    }
+
+    public function quiz()
+    {
+        return view('quiz-page');
+    }
+
+    public function start()
+    {
+        return view('start');
+    }
+
+    public function result()
+    {
+        return view('result');
+    }
+
+    public function userResult()
+    {
+        return view('user-result');
     }
 }

@@ -6,17 +6,7 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <nav class="topbar">
-            <div class="topbar-left">
-                <h2>Fayl Yuklash</h2>
-            </div>
-            <div class="topbar-right">
-                <div class="user-profile">
-                    <img src="/placeholder.svg?height=40&width=40" alt="Profile" class="profile-avatar">
-                    <span class="profile-name">Foydalanuvchi</span>
-                </div>
-            </div>
-        </nav>
+        <x-navbar></x-navbar>
 
         <div class="quizzes-content">
             <!-- Upload Area -->
@@ -26,14 +16,32 @@
                         <div class="upload-icon">📤</div>
                         <h2>Faylni Shu Yerga Qo'ying</h2>
                         <p>yoki</p>
+
                         <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
                             Faylni Tanlash
                         </button>
-                        <input type="file" id="fileInput" multiple style="display: none;" accept=".pdf,.doc,.docx,.txt,.jpg,.png">
+
+                        <input type="file" id="fileInput" multiple style="display: none;"
+                               accept=".pdf,.doc,.docx,.txt,.jpg,.png">
+
                         <p class="upload-hint">PDF, DOC, DOCX, TXT, JPG, PNG qabul qilinadi</p>
+
+                        <!-- 🔥 COUNT INPUT QO‘SHILDI -->
+                        <div class="count-box" style="margin-top: 20px;">
+                            <label for="fileCount" style="font-weight: 600;">Nechta element yuklanadi:</label>
+                            <input type="number" id="fileCount" min="1" class="form-control"
+                                   placeholder="Masalan: 5" style="margin-top: 8px; padding: 10px;">
+                        </div>
+
+{{--                        <!-- 🔥 YUKLASHNI BOSHLASH TUGMASI -->--}}
+{{--                        <button class="btn btn-success" style="margin-top: 15px;" onclick="startUpload()">--}}
+{{--                            Yuklashni Boshlash--}}
+{{--                        </button>--}}
+
                     </div>
                 </div>
             </section>
+
 
             <!-- Files List Section -->
             <section class="files-section">
@@ -143,6 +151,7 @@
 
         // 1 ta fayl topshiryapsiz deb o'ylaymiz
         formData.append('file', files[0]);
+        formData.append('questions_count' , fileCount.value)
 
         axios.post('/api/quiz/upload', formData, {
         headers: {

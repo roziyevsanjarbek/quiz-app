@@ -16,7 +16,7 @@ class AttemptAnswer extends Model
 
     public function attempt()
     {
-        return $this->belongsTo(Attempt::class);
+        return $this->belongsTo(QuizAttempt::class, 'attempt_id');
     }
 
     public function question()
@@ -24,7 +24,7 @@ class AttemptAnswer extends Model
         return $this->belongsTo(Question::class);
     }
 
-    public function selectedOption()
+    public function option()
     {
         return $this->belongsTo(Option::class, 'selected_option_id');
     }

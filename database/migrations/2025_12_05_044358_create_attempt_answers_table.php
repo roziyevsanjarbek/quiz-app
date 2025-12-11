@@ -9,11 +9,12 @@ return new class extends Migration {
     {
         Schema::create('attempt_answers', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('attempt_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('attempt_id')->constrained('quiz_attempts')->cascadeOnDelete();
             $table->foreignId('question_id')->constrained()->cascadeOnDelete();
             $table->foreignId('selected_option_id')->nullable()->constrained('options')->cascadeOnDelete();
             $table->text('answer_text')->nullable(); // text savollar uchun
             $table->boolean('is_correct')->default(false);
+            $table->unique(['attempt_id', 'question_id']);
             $table->timestamps();
         });
     }

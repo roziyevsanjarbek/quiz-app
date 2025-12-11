@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Quiz;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -23,6 +24,17 @@ class QuizController extends Controller
             'quizzes' => $quizzes
         ], 200);
     }
+
+    public function show($id)
+    {
+        $quiz = Quiz::with('questions.options')->findOrFail($id);
+
+        return response()->json([
+            'message' => 'Quiz fetched successfully',
+            'quiz' => $quiz
+        ]);
+    }
+
 
     public function store(Request $request)
     {
@@ -119,6 +131,95 @@ class QuizController extends Controller
         ], 200);
 
         }
+
+    // QuizController.php
+    public function destroy($quizId)
+    {
+        // Foydalanuvchi o'z quizini o'chira olishini tekshirish
+        $quiz = auth()->user()->quizzes()->findOrFail($quizId);
+
+        // Quizga tegishli savollar va ularning optionslarini o'chirish
+        $quiz->questions()->each(function($question) {
+            $question->options()->delete();
+            $question->delete();
+        });
+
+        // Quizni o'chirish
+        $quiz->delete();
+
+        return response()->json([
+            'message' => 'Quiz deleted successfully'
+        ], 200);
+    }
+
+    public function allQuizzes()
+    {
+        // Barcha quizlarni savollar soni bilan qaytarish
+        $quizzes = Quiz::withCount('questions')->get();
+
+        return response()->json([
+            'status' => true,
+            'quizzes' => $quizzes
+        ]);
+    }
+
+    public function getQuizQuestion($quizId, $questionId)
+    {
+        // Avvalo quizni topamiz
+        $quiz = Quiz::find($quizId);
+
+        if (!$quiz) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Quiz topilmadi'
+            ], 404);
+        }
+
+        // Quizga tegishli savolni topamiz
+        $question = $quiz->questions()
+            ->with('options')
+            ->where('id', $questionId)
+            ->first();
+
+        if (!$question) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bu quizda bunday question mavjud emas'
+            ], 404);
+        }
+
+        $totalQuestions = $quiz->questions()->count();
+
+        return response()->json([
+            'status' => true,
+            'quiz_id' => $quizId,
+            'quiz_title' => $quiz->title,
+            'question' => $question,
+            'total_questions' => $totalQuestions
+        ]);
+    }
+
+
+    public function getFirstQuestionId($quizId)
+    {
+        // Quiz ichidan eng birinchi savolni olamiz
+        $firstQuestion = \App\Models\Question::where('quiz_id', $quizId)
+            ->orderBy('id', 'asc')
+            ->first();
+
+        if (!$firstQuestion) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Bu quizda savollar mavjud emas'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => true,
+            'question_id' => $firstQuestion->id
+        ]);
+    }
+
 
 
 }

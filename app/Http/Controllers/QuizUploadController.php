@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 class QuizUploadController extends Controller
 {
 
+
     public function uploadAndParsePdf(Request $request)
     {
         // Validatsiya
         $request->validate([
             'file' => 'required|file|mimes:pdf|max:20480', // max 20 MB
+            'questions_count' => 'nullable|integer|min:1', // nechta savol tanlash
         ]);
 
+        $questionsCount = $request->input('questions_count', null);
 
         // Papka mavjud bo‘lmasa — yaratamiz
         if (!is_dir(storage_path('app/public/quiz_uploads/'))) {
@@ -22,8 +25,6 @@ class QuizUploadController extends Controller
 
         // Faylni storage/app/public/quiz_uploads ga saqlaymiz
         $path = $request->file('file')->store('quiz_uploads', 'public');
-
-        // Serverdagi to'liq path
         $fullPath = storage_path('app/public/' . $path);
 
         // PDF parser
@@ -42,37 +43,52 @@ class QuizUploadController extends Controller
             'description' => $description,
         ]);
 
-        // 2-qatorlardan keyin savollar ketadi
-        $i = 2;
+        // Savollarni yig‘ish
+        $allQuestions = [];
+        $i = 2; // 0-title, 1-description
         while ($i < count($lines)) {
             if ($lines[$i] === "") {
                 $i++;
                 continue;
             }
 
-            // Savol matni
             $questionText = $lines[$i];
             $i++;
 
-            // Options yig‘ish
             $options = [];
             while ($i < count($lines) && preg_match('/^[A-D]\)/', $lines[$i])) {
                 preg_match('/^([A-D])\)\s*(.+)$/', $lines[$i], $opt);
-
                 $options[] = [
                     'option_text' => $opt[2],
-                    'is_correct' => $opt[1] === 'A'  // A to‘g‘ri javob
+                    'is_correct' => $opt[1] === 'A', // A - to‘g‘ri javob PDF da
                 ];
-
                 $i++;
             }
 
-            // DB ga yozish
+            if (!empty($options)) {
+                $allQuestions[] = [
+                    'question_text' => $questionText,
+                    'options' => $options,
+                ];
+            }
+        }
+
+        // Agar $questionsCount berilgan bo‘lsa, random tanlash
+        if ($questionsCount && $questionsCount < count($allQuestions)) {
+            $allQuestions = collect($allQuestions)->random($questionsCount)->values()->all();
+        }
+
+        // Savollarni DB ga yozish + optionsni shuffle qilish
+        foreach ($allQuestions as $q) {
             $question = $quiz->questions()->create([
-                'question_text' => $questionText,
+                'question_text' => $q['question_text'],
                 'type' => 'multiple_choice',
             ]);
 
+            $options = $q['options'];
+
+            // To'g'ri javobni random boshqa variantga o'tkazish
+            shuffle($options); // variantlarni aralashtiramiz
             foreach ($options as $o) {
                 $question->options()->create($o);
             }
@@ -85,7 +101,8 @@ class QuizUploadController extends Controller
             'full_path' => $fullPath,
             'url' => asset('storage/' . $path),
         ]);
-}
+    }
+
 
 
     public function uploadPdf(Request $request)

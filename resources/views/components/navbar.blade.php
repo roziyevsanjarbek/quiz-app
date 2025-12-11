@@ -1,15 +1,4 @@
 <style>
-    /* Topbar */
-    .topbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 20px;
-        background: #ffffff;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
-    /* User profile (dropdown trigger) */
     .user-profile {
         display: flex;
         align-items: center;
@@ -22,19 +11,34 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
+        background: #4a90e2;
+        color: #fff;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        user-select: none;
     }
 
     /* Dropdown menu */
     .dropdown-menu {
         position: absolute;
-        top: 70px;
-        right: 20px;
+        top: 60px;
+        right: 0;
         width: 160px;
         background: #fff;
         border-radius: 10px;
         box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         padding: 8px 0;
         z-index: 999;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .dropdown-menu.show {
+        transform: scaleY(1);
     }
 
     .dropdown-item {
@@ -52,43 +56,55 @@
     .logout {
         color: #d00;
     }
-
-    .hidden {
-        display: none;
-    }
-
 </style>
+
 <nav class="topbar">
     <div class="topbar-left">
-        <h2>Welcome Back, User!</h2>
+        <h2>Welcome Back, <span id="navbarUser">User</span>!</h2>
     </div>
 
     <div class="topbar-right">
         <div class="user-profile" id="profileBtn">
-            <img src="/placeholder.svg?height=40&width=40" alt="Profile" class="profile-avatar">
-            <span class="profile-name">John Doe</span>
+            <div class="profile-avatar" id="profileAvatar">U</div>
         </div>
 
         <!-- Dropdown -->
-        <div class="dropdown-menu hidden" id="dropdownMenu">
-            <a href="#" class="dropdown-item">👤 Profile</a>
-            <a href="#" class="dropdown-item logout">🔚 Logout</a>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a class="dropdown-item {{ request()->is('super/profile*') ? 'active' : '' }}"
+               href="{{ route('profile') }}">
+                👤 Profile
+            </a>
+            <a class="dropdown-item {{ request()->is('super/logout*') ? 'active' : '' }}"
+               href="{{ route('logout') }}">
+                🔚 Chiqish
+            </a>
         </div>
     </div>
 </nav>
+
 <script>
-    const profileBtn = document.getElementById('profileBtn');
-    const dropdownMenu = document.getElementById('dropdownMenu');
+    document.addEventListener("DOMContentLoaded", () => {
+        const profileBtn = document.getElementById('profileBtn');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        const navbarUser = document.getElementById("navbarUser");
+        const profileAvatar = document.getElementById("profileAvatar");
 
-    // Toggle
-    profileBtn.addEventListener('click', () => {
-        dropdownMenu.classList.toggle('hidden');
-    });
+        // Username olish
+        const userName = localStorage.getItem("userName") || "User";
+        navbarUser.textContent = userName;
 
-    // Tashqariga bosilganda yopiladi
-    document.addEventListener('click', (e) => {
-        if (!profileBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-            dropdownMenu.classList.add('hidden');
-        }
+        // Avatarga ismning birinchi harfini qo‘yish
+        profileAvatar.textContent = userName.charAt(0).toUpperCase();
+
+        // Dropdown toggle
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Tashqariga bosilganda yopish
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.remove('show');
+        });
     });
 </script>
