@@ -236,7 +236,7 @@
                         <td>
 
                         </td>
-                       
+
                     </tbody>
                 </table>
             </div>
@@ -266,6 +266,7 @@
             });
         }
         const token = localStorage.getItem('token');
+        console.log(token);
         async function loadAttempts() {
             try {
                 const res = await fetch('/api/attempt-answers', {

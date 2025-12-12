@@ -276,7 +276,7 @@
 
     async function fetchQuizzes() {
         try {
-            const response = await axios.get("http://localhost:8000/api/all-quizzes");
+            const response = await axios.get("/api/all-quizzes");
 
             const quizzes = response.data.quizzes;
             const quizGrid = document.getElementById("quiz-grid");

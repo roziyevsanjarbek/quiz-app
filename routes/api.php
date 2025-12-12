@@ -22,6 +22,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/quiz/upload', [QuizUploadController::class, 'uploadAndParsePdf']);
     Route::post('/upload-pdf', [QuizUploadController::class, 'uploadPdf']);
     Route::get('/attempt-answers', [QuizAttemptController::class, 'getAllAttemptAnswers']);
+    Route::get('/attempts', [QuizAttemptController::class, 'get']);
+
 
 });
 
@@ -29,7 +31,6 @@ Route::post('/quiz/{quiz}/start', [QuizAttemptController::class, 'start']);
 Route::post('/attempts/answer', [QuizAttemptController::class, 'answerQuestion']);
 Route::post('/quiz/finish', [QuizAttemptController::class, 'finish']);
 
-Route::get('/attempts', [QuizAttemptController::class, 'get']);
 
 Route::get('/all-quizzes', [QuizController::class, 'allQuizzes']);
 Route::get('/get-question-id/{quizId}', [QuizController::class, 'getFirstQuestionId']);

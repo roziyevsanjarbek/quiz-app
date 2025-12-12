@@ -49,7 +49,7 @@
         const password = document.getElementById("password").value;
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/api/login", {
+            const response = await axios.post("/api/login", {
                 email: email,
                 password: password
             });
@@ -60,7 +60,6 @@
             // Tokenni browserga saqlab qo'yamiz
             localStorage.setItem("token", token);
             localStorage.setItem('userName', userName);
-
             // Dashboardga o'tkazamiz
             window.location.href = "/dashboard";
 

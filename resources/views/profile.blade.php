@@ -256,7 +256,7 @@
                 <span class="profile-name">John Doe</span>
             </div>
             <div class="dropdown-menu hidden" id="dropdownMenu">
-                <a href="/profile" class="dropdown-item">👤 Profile</a>
+                <a href="/dashboard" class="dropdown-item"><span class="nav-icon">🏠</span> Dashboard</a>
                 <a href="/" class="dropdown-item logout">🔚 Logout</a>
             </div>
         </div>
@@ -317,7 +317,7 @@
         }
 
         try {
-            const response = await axios.get("http://127.0.0.1:8000/api/profile", {
+            const response = await axios.get("/api/profile", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
