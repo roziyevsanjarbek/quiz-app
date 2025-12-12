@@ -110,7 +110,7 @@
 
             // Edit button
             if (e.target.classList.contains("edit-btn")) {
-                window.location.href = `http://localhost:8000/update-quizzes?quiz_id=${quizId}`;
+                window.location.href = `/update-quizzes?quiz_id=${quizId}`;
             }
 
             // Delete button
