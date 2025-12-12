@@ -231,104 +231,32 @@
         <div class="quiz-grid" id="quiz-grid">
             <!-- Quiz 1 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                    <div class="quiz-icon">📐</div>
-                    <span class="quiz-category">Matematika</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">Asosiy Matematika</h3>
-                    <p class="quiz-desc">Arifmetika, algebra va geometriya asoslari</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">20 savol</span>
-                        <span class="difficulty easy">Oson</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
 
             <!-- Quiz 2 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
-                    <div class="quiz-icon">🏛️</div>
-                    <span class="quiz-category">Tarix</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">O'zbekiston Tarixi</h3>
-                    <p class="quiz-desc">Buyuk ajdodlarimiz va tarixiy voqealar</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">25 savol</span>
-                        <span class="difficulty medium">O'rta</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
 
             <!-- Quiz 3 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #10b981, #059669);">
-                    <div class="quiz-icon">🔬</div>
-                    <span class="quiz-category">Fan</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">Biologiya Asoslari</h3>
-                    <p class="quiz-desc">Tirik organizmlar va hujayralar haqida</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">30 savol</span>
-                        <span class="difficulty hard">Qiyin</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
 
             <!-- Quiz 4 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
-                    <div class="quiz-icon">🌍</div>
-                    <span class="quiz-category">Geografiya</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">Dunyo Geografiyasi</h3>
-                    <p class="quiz-desc">Davlatlar, poytaxtlar va geografik ob'ektlar</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">35 savol</span>
-                        <span class="difficulty medium">O'rta</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
 
             <!-- Quiz 5 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                    <div class="quiz-icon">🇬🇧</div>
-                    <span class="quiz-category">Ingliz tili</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">English Grammar</h3>
-                    <p class="quiz-desc">Ingliz tili grammatikasi va lug'at boyligi</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">40 savol</span>
-                        <span class="difficulty hard">Qiyin</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
 
             <!-- Quiz 6 -->
             <div class="quiz-card">
-                <div class="quiz-header" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
-                    <div class="quiz-icon">💻</div>
-                    <span class="quiz-category">Texnologiya</span>
-                </div>
-                <div class="quiz-body">
-                    <h3 class="quiz-title">IT Asoslari</h3>
-                    <p class="quiz-desc">Kompyuter va dasturlash asoslari</p>
-                    <div class="quiz-info">
-                        <span class="quiz-questions">25 savol</span>
-                        <span class="difficulty easy">Oson</span>
-                    </div>
-                    <a href="#" class="quiz-btn">Boshlash</a>
-                </div>
+
             </div>
         </div>
     </div>

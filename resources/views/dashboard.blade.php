@@ -234,81 +234,9 @@
                     <tbody id="attempts-tbody">
                     <tr>
                         <td>
-                            <div class="user-info">
-                                <div class="avatar">AK</div>
-                                <span class="user-name">Alisher Karimov</span>
-                            </div>
+
                         </td>
-                        <td class="quiz-name">JavaScript asoslari</td>
-                        <td><span class="score-badge score-high">85%</span></td>
-                        <td class="date">10.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">NS</div>
-                                <span class="user-name">Nodira Saidova</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">Python dasturlash</td>
-                        <td><span class="score-badge score-high">92%</span></td>
-                        <td class="date">10.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">JR</div>
-                                <span class="user-name">Jamshid Rahimov</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">HTML va CSS</td>
-                        <td><span class="score-badge score-medium">65%</span></td>
-                        <td class="date">09.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">MA</div>
-                                <span class="user-name">Malika Azimova</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">React framework</td>
-                        <td><span class="score-badge score-high">88%</span></td>
-                        <td class="date">09.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">BT</div>
-                                <span class="user-name">Bobur Toshmatov</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">JavaScript asoslari</td>
-                        <td><span class="score-badge score-low">45%</span></td>
-                        <td class="date">08.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">GI</div>
-                                <span class="user-name">Gulnora Ismoilova</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">Umumiy bilim</td>
-                        <td><span class="score-badge score-medium">72%</span></td>
-                        <td class="date">08.12.2025</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <div class="avatar">SK</div>
-                                <span class="user-name">Sardor Kasimov</span>
-                            </div>
-                        </td>
-                        <td class="quiz-name">Matematika</td>
-                        <td><span class="score-badge score-high">95%</span></td>
-                        <td class="date">07.12.2025</td>
-                    </tr>
+                       
                     </tbody>
                 </table>
             </div>
