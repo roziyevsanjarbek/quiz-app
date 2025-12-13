@@ -304,7 +304,9 @@ class QuizController extends Controller
         }
 
         $question = $quiz->questions()
-            ->with('options')
+            ->with(['options' => function ($q) {
+                $q->select('id', 'question_id', 'option_text');
+            }])
             ->where('id', $questionId)
             ->first();
 
