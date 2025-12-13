@@ -230,4 +230,52 @@ class QuizAttemptController extends Controller
             'count' => $counts
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/quiz/search",
+     *     summary="Quizlarni title bo‘yicha qidirish",
+     *     tags={"Quizzes"},
+     *     @OA\Parameter(
+     *         name="q",
+     *         in="query",
+     *         required=false,
+     *         description="Quiz title bo‘yicha qidiruv so‘zi",
+     *         @OA\Schema(type="string", example="math")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quizlar ro‘yxati",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="quizzes",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="Math Quiz"),
+     *                     @OA\Property(property="description", type="string", example="Basic math quiz"),
+     *                     @OA\Property(property="user_id", type="integer", example=3)
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+    public function search(Request $request)
+    {
+        $query = $request->get('q');
+
+        $quizzes = Quiz::when($query, function ($q) use ($query) {
+            $q->where('title', 'LIKE', '%' . $query . '%');
+        })->get();
+
+        return response()->json([
+            'status' => true,
+            'quizzes' => $quizzes
+        ]);
+    }
 }

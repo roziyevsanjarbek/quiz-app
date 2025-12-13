@@ -356,6 +356,69 @@
                 }
             }
         },
+        "/api/quiz/search": {
+            "get": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Quizlarni title bo‘yicha qidirish",
+                "operationId": "927840ad08e925d150bee5eafb63b6f3",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Quiz title bo‘yicha qidiruv so‘zi",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "math"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Quizlar ro‘yxati",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "quizzes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Math Quiz"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Basic math quiz"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 3
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/quizzes": {
             "get": {
                 "tags": [

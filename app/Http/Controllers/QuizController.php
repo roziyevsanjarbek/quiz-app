@@ -317,6 +317,7 @@ class QuizController extends Controller
             ], 404);
         }
 
+
         $totalQuestions = $quiz->questions()->count();
 
         return response()->json([
