@@ -234,30 +234,6 @@
 
             </div>
 
-            <!-- Quiz 2 -->
-            <div class="quiz-card">
-
-            </div>
-
-            <!-- Quiz 3 -->
-            <div class="quiz-card">
-
-            </div>
-
-            <!-- Quiz 4 -->
-            <div class="quiz-card">
-
-            </div>
-
-            <!-- Quiz 5 -->
-            <div class="quiz-card">
-
-            </div>
-
-            <!-- Quiz 6 -->
-            <div class="quiz-card">
-
-            </div>
         </div>
     </div>
 </section>
@@ -288,7 +264,7 @@
                 const card = `
                 <div class="quiz-card">
                     <div class="quiz-header" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                        <div class="quiz-icon">📘</div>
+                        <div class="quiz-icon"> <img src="${q.icon_url}" alt="Quiz Icon" width="36"></div>
                         <span class="quiz-category">${q.title}</span>
                     </div>
 

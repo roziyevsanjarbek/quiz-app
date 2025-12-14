@@ -18,4 +18,5 @@ Route::get('/quizzes', [HomeController::class, 'quiz'])->name('quiz');
 Route::get('/quiz/{quiz}/start', [HomeController::class, 'start'])->name('start');
 //Route::get('/quiz/{quiz}/finish', [HomeController::class, 'finish'])->name('finish');
 Route::get('/quizzes/result', [HomeController::class, 'result'])->name('result');
+Route::get('/add-quiz-icon', [HomeController::class, 'subject'])->name('subject');
 

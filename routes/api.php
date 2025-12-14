@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/quizzes/{id}', [QuizController::class, 'show']);
     Route::delete('/quizzes/{id}', [QuizController::class, 'destroy']);
     Route::post('/quizzes', [QuizController::class, 'store']);
+    Route::post('/quizzes/{quiz}/icon', [QuizController::class, 'updateQuizIcon']);
     Route::post('/quizzes/{quizId}', [QuizController::class, 'update']);
     Route::get('/quiz/upload', [QuizUploadController::class, 'getUploadedFiles']);
     Route::post('/quiz/upload', [QuizUploadController::class, 'uploadAndParsePdf']);
@@ -36,6 +37,7 @@ Route::post('/quiz/finish', [QuizAttemptController::class, 'finish']);
 Route::get('/all-quizzes', [QuizController::class, 'allQuizzes']);
 Route::get('/get-question-id/{quizId}', [QuizController::class, 'getFirstQuestionId']);
 Route::get('/quiz/{quizId}/{questionId}', [QuizController::class, 'getQuizQuestion']);
+Route::get('/statistic-answers', [QuizAttemptController::class, 'allAttemptAnswers']);
 
 
 

@@ -278,4 +278,26 @@ class QuizAttemptController extends Controller
             'quizzes' => $quizzes
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/statistic-answers",
+     *     summary="Get all attempts with answers",
+     *     tags={"Quiz Attempts"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Attempts fetched successfully"
+     *     )
+     * )
+     */
+    public function allAttemptAnswers()
+    {
+        $attempts = Attempt::with(['quiz'])->orderBy('created_at', 'desc')->get();
+
+
+        return response()->json([
+            'message' => 'Attempts fetched successfully',
+            'attempts' => $attempts
+        ]);
+    }
 }

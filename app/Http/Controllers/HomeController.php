@@ -73,4 +73,9 @@ class HomeController extends Controller
     {
         return view('user-result');
     }
+
+    public function subject()
+    {
+        return view('add-quiz-icon');
+    }
 }

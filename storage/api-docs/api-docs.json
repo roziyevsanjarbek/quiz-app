@@ -419,6 +419,20 @@
                 }
             }
         },
+        "/api/statistic-answers": {
+            "get": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Get all attempts with answers",
+                "operationId": "0fc33635d0ca466a511c733be9e416be",
+                "responses": {
+                    "200": {
+                        "description": "Attempts fetched successfully"
+                    }
+                }
+            }
+        },
         "/api/quizzes": {
             "get": {
                 "tags": [
@@ -740,6 +754,97 @@
                         "description": "Questions not found"
                     }
                 }
+            }
+        },
+        "/api/quizzes/{quiz}/icon": {
+            "post": {
+                "tags": [
+                    "Quizzes"
+                ],
+                "summary": "Quiz uchun icon yangilash",
+                "description": "Quiz icon faylini yuborib yangilash",
+                "operationId": "updateQuizIcon",
+                "parameters": [
+                    {
+                        "name": "quiz",
+                        "in": "path",
+                        "description": "Yangilanadigan quiz ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "icon": {
+                                        "description": "Yuklanadigan icon fayl",
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Icon muvaffaqiyatli yangilandi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz icon muvaffaqiyatli yangilandi"
+                                        },
+                                        "quiz": {
+                                            "type": "object"
+                                        },
+                                        "icon_url": {
+                                            "type": "string",
+                                            "example": "http://localhost:8000/storage/icons/LQ06uaa3f21ANAZkZszPJGYKWvcuxypXUUVJbyzM.png"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Quiz topilmadi",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Quiz topilmadi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/quiz/upload": {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
@@ -272,13 +273,22 @@ class QuizController extends Controller
      */
     public function allQuizzes()
     {
-        $quizzes = Quiz::withCount('questions')->get();
-
+        $quizzes = Quiz::withCount('questions')->get()->map(function($quiz) {
+            return [
+                'id' => $quiz->id,
+                'title' => $quiz->title,
+                'description' => $quiz->description,
+                'questions_count' => $quiz->questions_count,
+                'icon_url' => asset('storage/' . $quiz->icon),
+            ];
+        });
         return response()->json([
             'status' => true,
             'quizzes' => $quizzes
         ]);
     }
+
+
 
 
     /**
@@ -356,6 +366,94 @@ class QuizController extends Controller
         return response()->json([
             'status' => true,
             'question_id' => $firstQuestion->id
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/quizzes/{quiz}/icon",
+     *     operationId="updateQuizIcon",
+     *     tags={"Quizzes"},
+     *     summary="Quiz uchun icon yangilash",
+     *     description="Quiz icon faylini yuborib yangilash",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="quiz",
+     *         in="path",
+     *         description="Yangilanadigan quiz ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="icon",
+     *                     type="file",
+     *                     description="Yuklanadigan icon fayl"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Icon muvaffaqiyatli yangilandi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Quiz icon muvaffaqiyatli yangilandi"),
+     *             @OA\Property(property="quiz", type="object"),
+     *             @OA\Property(property="icon_url", type="string", example="http://localhost:8000/storage/icons/LQ06uaa3f21ANAZkZszPJGYKWvcuxypXUUVJbyzM.png")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Quiz topilmadi",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Quiz topilmadi")
+     *         )
+     *     )
+     * )
+     */
+
+    public function updateQuizIcon(Request $request, $quizId)
+    {
+        // 1️⃣ Validation
+        $request->validate([
+            'icon' => 'required|file|mimes:svg,png,jpg,jpeg|max:2048', // maksimal 2MB
+        ]);
+
+        // 2️⃣ Quiz topish
+        $quiz = Quiz::find($quizId);
+        if (!$quiz) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Quiz topilmadi'
+            ], 404);
+        }
+
+        // 3️⃣ Faylni saqlash uchun papka tekshirish va yaratish
+        $storagePath = storage_path('app/public/icons/');
+        if (!is_dir($storagePath)) {
+            mkdir($storagePath, 0777, true);
+        }
+
+        // 4️⃣ Faylni storage/app/public/icons ga saqlash
+        $iconPath = $request->file('icon')->store('icons', 'public');
+
+        // 5️⃣ Quizni update qilish
+        $quiz->update([
+            'icon' => $iconPath
+        ]);
+
+        // 6️⃣ Javob
+        return response()->json([
+            'status' => true,
+            'message' => 'Quiz icon muvaffaqiyatli yangilandi',
+            'quiz' => $quiz,
+            'icon_url' => asset('storage/' . $iconPath)
         ]);
     }
 }

@@ -14,6 +14,11 @@
             <span class="nav-label">My Quizzes</span>
         </a>
 
+        <a href="{{ route('subject') }}" class="nav-item {{ request()->routeIs('subject') ? 'active' : '' }}">
+            <span class="menu-icon">📝</span>
+            <span class="menu-text">Quiz Icon</span>
+        </a>
+
         <a href="{{ route('add-quizzes') }}" class="nav-item {{ request()->routeIs('add-quizzes') ? 'active' : '' }}">
             <span class="nav-icon">✍️</span>
             <span class="nav-label">Create Quiz</span>

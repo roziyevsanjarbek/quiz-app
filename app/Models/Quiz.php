@@ -12,6 +12,7 @@ class Quiz extends Model
         'user_id',
         'title',
         'description',
+        'icon',
     ];
 
     public function questions()
