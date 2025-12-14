@@ -269,15 +269,27 @@ class QuizAttemptController extends Controller
     {
         $query = $request->get('q');
 
-        $quizzes = Quiz::when($query, function ($q) use ($query) {
-            $q->where('title', 'LIKE', '%' . $query . '%');
-        })->get();
+        $quizzes = Quiz::withCount('questions')
+            ->when($query, function ($q) use ($query) {
+                $q->where('title', 'LIKE', '%' . $query . '%');
+            })
+            ->get()
+            ->map(function ($quiz) {
+                return [
+                    'id' => $quiz->id,
+                    'title' => $quiz->title,
+                    'description' => $quiz->description,
+                    'questions_count' => $quiz->questions_count,
+                    'icon_url' => $quiz->icon ? asset('storage/' . $quiz->icon) : null,
+                ];
+            });
 
         return response()->json([
             'status' => true,
             'quizzes' => $quizzes
         ]);
     }
+
 
     /**
      * @OA\Get(
