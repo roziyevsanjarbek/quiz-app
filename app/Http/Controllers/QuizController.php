@@ -279,7 +279,7 @@ class QuizController extends Controller
                 'title' => $quiz->title,
                 'description' => $quiz->description,
                 'questions_count' => $quiz->questions_count,
-                'icon_url' => asset('storage/' . $quiz->icon),
+                'icon_url' => $quiz->icon ? asset('storage/' . $quiz->icon) : null,
             ];
         });
         return response()->json([

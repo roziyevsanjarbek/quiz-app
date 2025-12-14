@@ -336,18 +336,18 @@
             </div>
 
             <div class="quiz-grid" id="quiz-grid">
-                <div class="quiz-card" data-quiz-id="1">
-                    <div class="quiz-card-header">
-                        <span class="quiz-icon">💻</span>
-                        <span class="quiz-badge">Dasturlash</span>
-                    </div>
-                    <h3 class="quiz-title">JavaScript asoslari</h3>
-                    <p class="quiz-description">JavaScript dasturlash tilining asosiy tushunchalari</p>
-                    <div class="quiz-meta">
-                        <span>⏱ 15 daqiqa</span>
-                        <span>❓ 10 savol</span>
-                    </div>
-                </div>
+{{--                <div class="quiz-card" data-quiz-id="1">--}}
+{{--                    <div class="quiz-card-header">--}}
+{{--                        <span class="quiz-icon">💻</span>--}}
+{{--                        <span class="quiz-badge">Dasturlash</span>--}}
+{{--                    </div>--}}
+{{--                    <h3 class="quiz-title">JavaScript asoslari</h3>--}}
+{{--                    <p class="quiz-description">JavaScript dasturlash tilining asosiy tushunchalari</p>--}}
+{{--                    <div class="quiz-meta">--}}
+{{--                        <span>⏱ 15 daqiqa</span>--}}
+{{--                        <span>❓ 10 savol</span>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
             </div>
         </section>
 
@@ -465,10 +465,12 @@
                 }
             );
 
-            // UI update
-            const iconEl = selectedQuizCard.querySelector('.quiz-icon');
-            iconEl.innerHTML = `<img src="${res.data.path}" width="36">`;
 
+
+            // UI update
+            // const iconEl = selectedQuizCard.querySelector('.quiz-icon');
+            // iconEl.innerHTML = `<img src="${res.icon_url}" width="36" alt="jyfvyjh">`;
+            //
             iconModal.classList.add('hidden');
             fileInput.value = '';
 
