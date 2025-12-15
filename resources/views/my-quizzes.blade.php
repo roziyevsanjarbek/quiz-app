@@ -40,12 +40,10 @@
                     <p class="quiz-desc">${quiz.description || ''}</p>
                     <div class="quiz-meta">
                         <span>Created: ${new Date(quiz.created_at).toLocaleDateString()}</span>
-                        <span class="quiz-status">${quiz.status ?? 'Draft'}</span>
                     </div>
                     <div class="quiz-card-actions">
                         <button class="btn btn-small btn-secondary edit-btn" data-id="${quiz.id}">Edit</button>
                         <button class="btn btn-small btn-secondary delete-btn" data-id="${quiz.id}">Delete</button>
-                        <button class="btn btn-small btn-primary take-btn" data-id="${quiz.id}">Take</button>
                     </div>
                 `;
                 quizzesGrid.appendChild(quizCard);
