@@ -639,9 +639,10 @@ body {
 }
 
 .quiz-card-actions {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: space-between;
+    width: 100%;
+    /*display: flex;*/
+    /*gap: 0.5rem;*/
+    /*justify-content: space-between;*/
 }
 
 /* Create Quiz Page */
@@ -1107,13 +1108,6 @@ body {
 .delete-btn {
     background-color: #e53e3e; /* qizil */
     color: white;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.2s;
 }
 
 .delete-btn:hover {
@@ -1123,14 +1117,6 @@ body {
 .edit-btn {
     background-color: #3182ce; /* ko‘k */
     color: white;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: background-color 0.2s;
-    margin-right: 8px;
 }
 
 .edit-btn:hover {

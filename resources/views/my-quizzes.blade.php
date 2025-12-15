@@ -14,6 +14,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<x-footer></x-footer>
 <script>
     const quizzesGrid = document.getElementById('quizzesGrid');
     const token = localStorage.getItem('token'); // Sanctum / Passport token
@@ -34,16 +35,23 @@
                 const quizCard = document.createElement('div');
                 quizCard.classList.add('quiz-card');
                 quizCard.innerHTML = `
-                    <div class="quiz-card-header">
-                        <h3>${quiz.title}</h3>
-                    </div>
-                    <p class="quiz-desc">${quiz.description || ''}</p>
-                    <div class="quiz-meta">
-                        <span>Created: ${new Date(quiz.created_at).toLocaleDateString()}</span>
-                    </div>
-                    <div class="quiz-card-actions">
-                        <button class="btn btn-small btn-secondary edit-btn" data-id="${quiz.id}">Edit</button>
-                        <button class="btn btn-small btn-secondary delete-btn" data-id="${quiz.id}">Delete</button>
+                    <div style="display: flex; flex-direction: column; height: 100%; align-items: center; justify-content: space-between">
+                        <div>
+                            <div class="quiz-card-header">
+                                <h3>${quiz.title}</h3>
+                            </div>
+                            <p class="quiz-desc">${quiz.description || ''}</p>
+
+                        </div>
+                        <div class="quiz-card-actions">
+                            <div class="quiz-meta">
+                                <span>Created: ${new Date(quiz.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <button class="btn btn-small btn-secondary edit-btn" data-id="${quiz.id}">Edit</button>
+                                <button class="btn btn-small btn-secondary delete-btn" data-id="${quiz.id}">Delete</button>
+                            </div>
+                        </div>
                     </div>
                 `;
                 quizzesGrid.appendChild(quizCard);
@@ -141,4 +149,3 @@
 
 
 </script>
-<x-footer></x-footer>
