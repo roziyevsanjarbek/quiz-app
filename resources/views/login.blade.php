@@ -24,16 +24,11 @@
                     <input type="password" id="password" placeholder="Enter your password" required>
                 </div>
                 <div class="form-options">
-                    <label class="checkbox">
-                        <input type="checkbox">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" class="forgot-link">Forgot password?</a>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </form>
             <div class="login-footer">
-                <p>Don't have an account? <a href="#" class="signup-link">Sign up here</a></p>
+                <p>Boshsahifaga qaytasizmi? <a href="/" class="signup-link">Boshsahifa</a></p>
             </div>
         </div>
     </div>

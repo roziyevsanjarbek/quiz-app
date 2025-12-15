@@ -70,12 +70,12 @@
 
         <!-- Dropdown -->
         <div class="dropdown-menu" id="dropdownMenu">
-            <a class="dropdown-item {{ request()->is('super/profile*') ? 'active' : '' }}"
+            <a class="dropdown-item"
                href="{{ route('profile') }}">
                 👤 Profile
             </a>
-            <a class="dropdown-item {{ request()->is('super/logout*') ? 'active' : '' }}"
-               href="{{ route('logout') }}">
+            <a class="dropdown-item" id="logoutBtn"
+               href="#">
                 🔚 Chiqish
             </a>
         </div>
@@ -107,4 +107,32 @@
             dropdownMenu.classList.remove('show');
         });
     });
+
+    document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+        e.preventDefault(); // default link harakatini to‘xtatamiz
+        const token = localStorage.getItem('token')
+        try {
+            const res = await fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json'
+                }
+            });
+
+            const data = await res.json();
+            console.log(data);
+
+            if (res.ok) {
+                // logout bo‘lgach login sahifaga redirect
+                window.location.href = '/login';
+            } else {
+                alert('Logout failed!');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Logout error!');
+        }
+    });
+
 </script>
