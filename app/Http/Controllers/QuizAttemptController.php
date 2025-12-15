@@ -209,6 +209,37 @@ class QuizAttemptController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/attempts/exit",
+     *     summary="Exit quiz and finish attempt",
+     *     description="Allows user to exit a quiz before completing all questions. Calculates score and marks attempt as finished.",
+     *     operationId="exitQuiz",
+     *     tags={"Quiz Attempts"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"attempt_id"},
+     *             @OA\Property(property="attempt_id", type="integer", example=1, description="ID of the quiz attempt")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Quiz successfully finished",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="finished", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The attempt_id field is required."),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function exitQuiz(Request $request)
     {
         $request->validate([

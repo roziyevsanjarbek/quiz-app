@@ -323,6 +323,73 @@
                 }
             }
         },
+        "/api/attempts/exit": {
+            "post": {
+                "tags": [
+                    "Quiz Attempts"
+                ],
+                "summary": "Exit quiz and finish attempt",
+                "description": "Allows user to exit a quiz before completing all questions. Calculates score and marks attempt as finished.",
+                "operationId": "exitQuiz",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "attempt_id"
+                                ],
+                                "properties": {
+                                    "attempt_id": {
+                                        "description": "ID of the quiz attempt",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quiz successfully finished",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "finished": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The attempt_id field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/attempt-answers": {
             "get": {
                 "tags": [
