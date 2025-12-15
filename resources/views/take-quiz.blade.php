@@ -87,7 +87,7 @@
             </div>
 
             <div class="quiz-actions">
-                <button class="btn btn-secondary">Exit Quiz</button>
+                <button id="exitQuizBtn" class="btn btn-secondary">Exit Quiz</button>
             </div>
 
         </div>
@@ -113,57 +113,9 @@
 
     nextBtn.disabled = true; // avvaliga bosilmaydi
 
-    // ⬇️ 3) JAVOBNI BACKENDGA YUBORISH
-    async function getQuestionId() {
-        const response = await fetch(`/api/get-question-id/${quizId}`);
-        const data = await response.json();
-
-        console.log("Question ID API javobi:", data);
-
-        questionId = data.question_id; // <-- to'g'ridan-to'g'ri olamiz
-        return questionId;
-    }
-
-
-    // const res =
 
     console.log(questionId)
 
-
-
-    // ⬇️ 1) SAVOLNI API DAN YUKLASH
-    async function loadQuestion() {
-        if(count === 0 )await getQuestionId()
-        try {
-            const res = await fetch(`/api/quiz/${quizId}/${questionId}`);
-            const data = await res.json();
-            console.log(data.question);
-
-            renderQuestion(data.question);
-
-            // ➤ progressni yangilash
-            const totalQuestions = data.total_questions;      // JSON dan
-            const progressText = document.querySelector('.progress-text');
-            const progressFill = document.querySelector('.progress-fill');
-
-            progressText.textContent = `Question ${++count} of ${totalQuestions}`;
-            const quizTitle = document.querySelector('.topbar h2');
-            const QuizTitle = data.quiz_title;
-            quizTitle.textContent = `${QuizTitle}`;
-            const percent = (count / totalQuestions) * 100;
-            progressFill.style.width = percent + '%';
-
-            // ➤ Next tugmasini Submitga aylantirish
-            if (count === totalQuestions) {
-                nextBtn.textContent = "Submit Quiz";
-            } else {
-                nextBtn.textContent = "Next →";
-            }
-
-        } catch (e) {
-            console.error("Savolni yuklab bo‘lmadi:", e);
-        }
-    }
 
 
     // ⬇️ 2) SAVOLNI EKRANGA CHIQARISH
@@ -224,6 +176,36 @@
         });
     }
 
+    async function resumeAttempt() {
+        const res = await fetch(`/api/attempts/${attemptId}/resume`);
+        const data = await res.json();
+
+        // 🔥 OXIRGI SAVOLDAN KEYIN REFRESH BO‘LSA
+        if (data.finished) {
+            window.location.href = `/quizzes/result?attempt_id=${attemptId}`;
+            return;
+        }
+
+        questionId = data.question.id;
+        count = data.answered_count;
+
+        renderQuestion(data.question);
+
+        const progressText = document.querySelector('.progress-text');
+        const progressFill = document.querySelector('.progress-fill');
+
+        const currentNumber = count + 1;
+        const total = data.total_questions;
+
+        progressText.textContent = `Question ${currentNumber} of ${total}`;
+        progressFill.style.width = (currentNumber / total) * 100 + '%';
+
+        document.querySelector('.topbar h2').textContent = data.quiz_title;
+
+        nextBtn.textContent = currentNumber === total ? 'Submit Quiz' : 'Next →';
+    }
+
+
 
 
     // ⬇️ 3) JAVOBNI BACKENDGA YUBORISH
@@ -245,18 +227,35 @@
 
     }
 
-    // ⬇️ 4) NEXT BOSILGANDA
     nextBtn.addEventListener('click', async () => {
         if (!selectedOptionId) return;
 
+        if (nextBtn.textContent.includes('Submit')) {
+            window.location.href = `/quizzes/result?attempt_id=${attemptId}`;
+            return;
+        }
 
-        const totalQuestions = document.querySelector('.progress-text').textContent.split(' of ')[1];
-
-
-
-        questionId++;
-        loadQuestion();
+        await resumeAttempt();
     });
+
+    document.getElementById('exitQuizBtn').addEventListener('click', async () => {
+        const confirmExit = confirm('Are you sure you want to exit the quiz?');
+        if (!confirmExit) return;
+
+        await fetch('/api/attempts/exit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                attempt_id: attemptId
+            })
+        });
+
+        window.location.href = `/quizzes/result?attempt_id=${attemptId}`;
+    });
+
 
 
 
@@ -278,8 +277,8 @@
     });
 
     // SAHIFA OCHILGANDA 1-SAVOLNI YUKLAYMIZ
-    loadQuestion();
 
+    resumeAttempt();
 </script>
 
 </body>

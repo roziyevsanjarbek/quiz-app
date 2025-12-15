@@ -422,7 +422,13 @@
                 const card = `
                  <div class="quiz-card" data-quiz-id="${q.id}">
                     <div class="quiz-card-header">
-                        <span class="quiz-icon"> ${`<img src="${q.icon_url}" width="36" alt="Quiz Icon">`}</span>
+                       <span class="quiz-icon">
+                        ${q.icon_url
+                            ? `<img src="${q.icon_url}" width="36" alt="Quiz Icon">`
+                            : `<img src="/storage/icons/unknown_7901131.png" width="36" alt="Default Icon">`
+                        }
+                        </span>
+
                         <span class="quiz-badge">${q.title}</span>
                     </div>
                     <h3 class="quiz-title">${q.title}</h3>

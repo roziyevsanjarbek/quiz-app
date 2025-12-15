@@ -264,7 +264,12 @@
                 const card = `
                 <div class="quiz-card">
                     <div class="quiz-header" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                        <div class="quiz-icon"> <img src="${q.icon_url}" alt="Quiz Icon" width="36"></div>
+                        <div class="quiz-icon">
+                                ${q.icon_url
+                    ? `<img src="${q.icon_url}" width="36" alt="Quiz Icon">`
+                    : `<img src="/storage/icons/unknown_7901131.png" width="36" alt="Quiz Icon">`
+                }
+                        </div>
                         <span class="quiz-category">${q.title}</span>
                     </div>
 
@@ -274,7 +279,6 @@
 
                         <div class="quiz-info">
                             <span class="quiz-questions">${q.questions_count} savol</span>
-                            <span class="difficulty easy">Oson</span>
                         </div>
 
                         <a href="/quiz/${q.id}/start" class="quiz-btn">Boshlash</a>

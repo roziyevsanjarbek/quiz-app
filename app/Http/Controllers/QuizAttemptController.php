@@ -115,6 +115,10 @@ class QuizAttemptController extends Controller
             'is_correct' => $isCorrect,
         ]);
 
+        $attempt->update([
+            'current_question_id' => $question->id
+        ]);
+
         return response()->json([
             'your_answer' => $selectedOption->option_text,
             'is_correct' => $isCorrect,
@@ -172,6 +176,64 @@ class QuizAttemptController extends Controller
             'percentage' => round(($correct / $totalQuestions) * 100, 2)
         ]);
     }
+
+    public function resume($attemptId)
+    {
+        $attempt = QuizAttempt::with('quiz.questions.options', 'answers')
+            ->findOrFail($attemptId);
+
+        $total = $attempt->quiz->questions()->count();
+        $answeredCount = $attempt->answers()->count();
+
+        // 🔥 HAMMASI JAVOB BERILGAN
+        if ($answeredCount >= $total) {
+            return response()->json([
+                'finished' => true
+            ]);
+        }
+
+        $answeredIds = $attempt->answers->pluck('question_id')->toArray();
+
+        $question = $attempt->quiz->questions()
+            ->whereNotIn('id', $answeredIds)
+            ->with('options')
+            ->orderBy('id')
+            ->first();
+
+        return response()->json([
+            'finished' => false,
+            'question' => $question,
+            'answered_count' => $answeredCount,
+            'total_questions' => $total,
+            'quiz_title' => $attempt->quiz->title
+        ]);
+    }
+
+    public function exitQuiz(Request $request)
+    {
+        $request->validate([
+            'attempt_id' => 'required|exists:quiz_attempts,id'
+        ]);
+
+        $attempt = QuizAttempt::with('quiz.questions')->findOrFail($request->attempt_id);
+
+        $total = $attempt->quiz->questions()->count();
+        $correct = $attempt->answers()->where('is_correct', true)->count();
+        $wrong = $total - $correct;
+
+        $attempt->update([
+            'score' => $correct,
+            'is_finished' => true
+        ]);
+
+        return response()->json([
+            'finished' => true
+        ]);
+    }
+
+
+
+
 
     /**
      * @OA\Get(

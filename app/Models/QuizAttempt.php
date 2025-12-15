@@ -12,6 +12,7 @@ class QuizAttempt extends Model
         'quiz_id',
         'full_name',
         'score',
+        'is_finished',
         'total_questions',
     ];
 

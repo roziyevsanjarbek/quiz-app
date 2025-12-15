@@ -33,6 +33,10 @@ Route::get('/quiz/search', [QuizAttemptController::class, 'search']);
 Route::post('/quiz/{quiz}/start', [QuizAttemptController::class, 'start']);
 Route::post('/attempts/answer', [QuizAttemptController::class, 'answerQuestion']);
 Route::post('/quiz/finish', [QuizAttemptController::class, 'finish']);
+Route::get('/attempts/{attempt}/resume', [QuizAttemptController::class, 'resume']);
+Route::post('/attempts/exit', [QuizAttemptController::class, 'exitQuiz']);
+
+
 
 Route::get('/all-quizzes', [QuizController::class, 'allQuizzes']);
 Route::get('/get-question-id/{quizId}', [QuizController::class, 'getFirstQuestionId']);
