@@ -74,7 +74,7 @@
                href="{{ route('profile') }}">
                 👤 Profile
             </a>
-            <a class="dropdown-item" id="logoutBtn"
+            <a class="dropdown-item logout" id="logoutBtn"
                href="#">
                 🔚 Chiqish
             </a>

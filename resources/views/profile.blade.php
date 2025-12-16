@@ -257,7 +257,7 @@
             </div>
             <div class="dropdown-menu hidden" id="dropdownMenu">
                 <a href="/dashboard" class="dropdown-item"><span class="nav-icon">🏠</span> Dashboard</a>
-                <a href="/" class="dropdown-item logout">🔚 Logout</a>
+                <a href="/" class="dropdown-item logout">🔚 Chiqish</a>
             </div>
         </div>
     </nav>
