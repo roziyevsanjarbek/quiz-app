@@ -8,7 +8,7 @@ Route::get('/login', [HomeController::class, 'login'])->name('login');
 Route::get('/logout', [HomeController::class, 'logout'])->name('logout');
 
 // routes/web.php
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::get('/profile', [HomeController::class, 'profile'])->name('profile');
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
@@ -17,7 +17,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/update-quizzes', [HomeController::class, 'updateQuizzes'])->name('update-quizzes');
     Route::get('/upload-quiz', [HomeController::class, 'uploadQuiz'])->name('upload-quiz');
     Route::get('/add-quiz-icon', [HomeController::class, 'subject'])->name('subject');
-});
+
 
 Route::get('/', [HomeController::class, 'welcome'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
