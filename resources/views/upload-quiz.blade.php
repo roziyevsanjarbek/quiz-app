@@ -28,15 +28,19 @@
 
                         <!-- 🔥 COUNT INPUT QO‘SHILDI -->
                         <div class="count-box" style="margin-top: 20px;">
-                            <label for="fileCount" style="font-weight: 600;">Nechta element yuklanadi:</label>
+                            <label for="fileCount" style="font-weight:600; display:block;">
+                                Nechta element yuklanadi:
+                            </label>
+
+                            <label for="fileCount" style="font-weight:600; display:block; margin-top:4px; color: red">
+                                Faylni yuklashdan oldin savollar sonini kiriting:
+                            </label>
+
                             <input type="number" id="fileCount" min="1" class="form-control"
-                                   placeholder="Masalan: 5" style="margin-top: 8px; padding: 10px;">
+                                   placeholder="Masalan: 5"
+                                   style="margin-top:8px; padding:10px;">
                         </div>
 
-{{--                        <!-- 🔥 YUKLASHNI BOSHLASH TUGMASI -->--}}
-{{--                        <button class="btn btn-success" style="margin-top: 15px;" onclick="startUpload()">--}}
-{{--                            Yuklashni Boshlash--}}
-{{--                        </button>--}}
 
                     </div>
                 </div>
