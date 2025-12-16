@@ -25,6 +25,11 @@ class HomeController extends Controller
         return view('dashboard');
     }
 
+    public function about()
+    {
+        return view('about');
+    }
+
     public function myQuizzes()
     {
         return view('my-quizzes');

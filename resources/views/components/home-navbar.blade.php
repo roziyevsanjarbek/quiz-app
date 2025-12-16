@@ -6,9 +6,9 @@
                 <span class="logo-text">QuizMaster</span>
             </div>
             <nav>
-                <a href="/">Bosh sahifa</a>
-                <a href="/quizzes">Quizlar</a>
-                <a href="#">Biz haqimizda</a>
+                <a href="{{ route('home') }}">Bosh sahifa</a>
+                <a href="{{ route('quiz') }}">Quizlar</a>
+                <a href="{{ route('about') }}">Biz haqimizda</a>
             </nav>
         </div>
     </div>
