@@ -29,22 +29,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/login",
      *     summary="Login user and get token",
-     *     tags={"Auth"},
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email","password"},
-     *             @OA\Property(property="email", type="string", example="superadmin@example.com"),
-     *             @OA\Property(property="password", type="string", example="password123")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Login successful",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="user", type="object"),
-     *             @OA\Property(property="token", type="string", example="1|JDSHFJSHFJSFHJSFJHSF")
-     *         )
+     *     tags={"Auth"}
      *     ),
      *     @OA\Response(
      *         response=401,
@@ -54,10 +39,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validator = $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
+
 
         $user = User::query()->where('email', $validator['email'])->first();
 
@@ -113,7 +95,6 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
 
         return response()->json(['message' => 'Logged out successfully']);
     }
